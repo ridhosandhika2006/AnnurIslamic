@@ -38,6 +38,7 @@
       padding: 1rem;
       min-height: 100vh;
       position: relative;
+      /* Tambahan: blokir zoom dengan user-select dan pointer-events jika diperlukan */
     }
     h1 { font-size: 2rem; color: var(--primary-color); margin: 1rem 0; text-align: center; }
     .table-container { width: 100%; max-width: 700px; margin-bottom: 1.5rem; background: var(--card-bg); border-radius: var(--radius); box-shadow: 0 4px 12px var(--card-shadow); overflow-x: auto; }
@@ -130,35 +131,36 @@
     .btn-primary { background: var(--primary-color); color: var(--secondary-color); }
     .btn-secondary { background: #e5e7eb; color: var(--text-color); }
     .btn-danger { background: #ef4444; color: var(--secondary-color); }
+
+    /* Tambahan: blokir zoom dan copy */
+    /* Memblokir zoom dengan disable user zoom pada viewport (metode CSS) */
+    /* Tapi paling efektif dilakukan lewat meta viewport dan event JS */
   </style>
 </head>
 <body>
-  <h1>Annur Islamic</h1>
+  <h1>AnnurIslamic</h1>
 
-  <!-- Toggle Button and Sidebar -->
+  <!-- Toggle Button dan Sidebar -->
   <button id="menu-toggle">
     <span class="bar"></span>
     <span class="bar"></span>
     <span class="bar"></span>
   </button>
   <nav id="sidebar">
-    <h3>Setting</h3>
+    <h3>Menu</h3>
     <ul>
       <li><a href="#jadwal">Sholat</a></li>
       <li><a href="#alquran">Al-Qur'an</a></li>
       <li><a href="https://.com">Doa Harian</a></li>
       <li><a href="dzikir.html">Dzikir</a></li>
       <li><a href="kiblat.html">Kiblat</a></li>
-      <li><a href="#" id="open-settings">Pengaturan Sistem</a></li>
+      <li><a href="#" id="open-settings">Pengaturan</a></li>
     </ul>
-  </div>
-
   <footer>
-    © Annur Islamic 2025 ||Support By: Mediaga Group || Hubungi <a href="https://ridhosandhika2006.github.io/Website-Portfolio/" target="_blank">klik di sini</a>
-  </footer>
+    © AnnurIslamic 2025 ||Support By: Mediaga Group || Hubungi <a href="https://ridhosandhika2006.github.io/Website-Portfolio/" target="_blank">klik di sini</a>
   </nav>
 
-  <!-- Location Permission Modal -->
+  <!-- Modal Izin Lokasi -->
   <div id="modal-location" class="modal-backdrop">
     <div class="modal">
       <h2>Izin Lokasi</h2>
@@ -169,7 +171,7 @@
     </div>
   </div>
 
-  <!-- Notification Permission Modal -->
+  <!-- Modal Izin Notifikasi -->
   <div id="modal-notification" class="modal-backdrop" style="display:none;">
     <div class="modal">
       <h2>Izin Notifikasi</h2>
@@ -179,7 +181,7 @@
     </div>
   </div>
 
-  <!-- About Modal -->
+  <!-- Modal Tentang -->
   <div id="modal-about" class="modal-backdrop" style="display:none;">
     <div class="modal">
       <h2 id="about-title">Tentang Aplikasi</h2>
@@ -188,8 +190,7 @@
     </div>
   </div>
 
-  <!-- Main Content Tables -->
-  <!-- Tabel Waktu Real-Time + Kota Gabung -->
+  <!-- Tabel Waktu Real + Kota Gabung -->
   <div class="table-container" id="time-table">
     <table>
       <thead>
@@ -245,7 +246,7 @@
     </table>
   </div>
 
-  <!-- Countdown -->
+  <!-- Countdown Waktu -->
   <div class="table-container" id="countdown-table">
     <table>
       <thead>
@@ -258,8 +259,32 @@
     </table>
   </div>
 
+  </footer>
 
   <script>
+    // Blokir zoom dan copy
+    // Blokir zoom dengan meta viewport dan JS
+    document.addEventListener('keydown', function(e) {
+      // Blok Ctrl+ / Cmd+ (Zoom In)
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key === '+' || e.key === '-' || e.key === '0' || e.key === '=' || e.key === '_') {
+          e.preventDefault();
+        }
+        // Blok mouse wheel + ctrl
+        if (e.type === 'wheel') {
+          e.preventDefault();
+        }
+      }
+    });
+
+    // Blokir klik kanan dan copy
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+    });
+    document.addEventListener('copy', function(e) {
+      e.preventDefault();
+    });
+
     // Modal logic
     const hideModal = id => document.getElementById(id).style.display = 'none';
     const showModal = id => document.getElementById(id).style.display = 'flex';
@@ -299,8 +324,6 @@
       realTimeEl.textContent = now.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 
       // Update kota di kolom tabel waktu real-time
-      // Kota sudah diupdate saat fetch, jadi tidak perlu diupdate di sini lagi
-      // Tapi jika ingin memastikan, bisa di sini
       document.getElementById('city').textContent = document.getElementById('city').textContent || '';
 
       // Update tanggal
@@ -425,7 +448,7 @@
     document.getElementById('open-settings').addEventListener('click', e=>{ e.preventDefault(); settingsPanel.style.display='block'; });
     document.getElementById('close-settings').addEventListener('click', ()=>{ settingsPanel.style.display='none'; });
 
-    // Dark mode logic
+    // Dark mode toggle
     const htmlEl = document.documentElement;
     const darkCheckbox = document.getElementById('toggle-dark');
     darkCheckbox.checked = localStorage.getItem('darkMode')==='true';
@@ -435,7 +458,7 @@
       else { htmlEl.classList.remove('dark'); localStorage.setItem('darkMode','false'); }
     });
 
-    // Language logic
+    // Bahasa
     const strings = {
       id: { title:'AnnurIslamic', settings:'Pengaturan', aboutText:'Annur Islamic adalah aplikasi jadwal sholat dan informasi Islami.', close:'Tutup' },
       en: { title:'AnnurIslamic', settings:'Settings', aboutText:'Annur Islamic is a prayer times and Islamic info application.', close:'Close' }
@@ -447,7 +470,7 @@
     selectLang.addEventListener('change', ()=>{ lang = selectLang.value; localStorage.setItem('lang',lang); applyLang(lang); });
     function applyLang(l){ const s = strings[l]; document.querySelector('h1').textContent = s.title; document.getElementById('open-settings').textContent = s.settings; document.getElementById('about-close').textContent = s.close; document.getElementById('about-title').textContent = s.settings; }
 
-    // About modal logic
+    // About modal
     const aboutModal    = document.getElementById('modal-about');
     const aboutTextEl   = document.getElementById('about-text');
     const aboutCloseBtn = document.getElementById('about-close');
@@ -457,8 +480,8 @@
     });
     aboutCloseBtn.addEventListener('click', ()=>{ aboutModal.style.display = 'none'; });
     aboutModal.addEventListener('click', e => { if(e.target===aboutModal) aboutModal.style.display='none'; });
-
-       document.addEventListener("contextmenu", function(event) {
+    
+   document.addEventListener("contextmenu", function(event) {
       event.preventDefault();
     }, false);
 
