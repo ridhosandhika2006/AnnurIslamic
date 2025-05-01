@@ -64,7 +64,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background var(--transition);
     }
     #menu-toggle:hover {
       background: rgba(79,70,229,0.8);
@@ -134,7 +133,7 @@
   </style>
 </head>
 <body>
-  <h1>AnnurIslamic</h1>
+  <h1>Annur Islamic</h1>
 
   <!-- Toggle Button and Sidebar -->
   <button id="menu-toggle">
@@ -145,16 +144,13 @@
   <nav id="sidebar">
     <h3>Menu</h3>
     <ul>
-      <li><a href="#jadwal">Sholat</a>
-      <li><a href="#jadwal">Al-Qur'an</a>
-      <li><a href="https://.com">Doa Harian</a>
-      <li><a href="dzikir.html">Dzikir</a>
-      <li><a href="kiblat.html">Kiblat</a>
-      <li><a href="#" id="open-settings">Pengaturan</a>
+      <li><a href="#jadwal">Sholat</a></li>
+      <li><a href="#alquran">Al-Qur'an</a></li>
+      <li><a href="https://.com">Doa Harian</a></li>
+      <li><a href="dzikir.html">Dzikir</a></li>
+      <li><a href="kiblat.html">Kiblat</a></li>
+      <li><a href="#" id="open-settings">Pengaturan</a></li>
     </ul>
-    <div>
-  <footer>&copy; AnnurIslamic 2025 ||Support By: Mediaga Group || Hubungi <a href="https://ridhosandhika2006.github.io/Website-Portfolio/" target="_blank">klik di sini</a>
-  </footer>
   </nav>
 
   <!-- Location Permission Modal -->
@@ -188,35 +184,81 @@
   </div>
 
   <!-- Main Content Tables -->
+  <!-- Tabel Waktu Real-Time + Kota Gabung -->
   <div class="table-container" id="time-table">
     <table>
-      <thead><tr><th>Waktu Sekarang</th></tr></thead>
-      <tbody><tr><td id="real-time"></td></tr></tbody>
+      <thead>
+        <tr>
+          <th>Waktu Sekarang</th>
+          <th>Kota</th> <!-- Kolom kota -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td id="real-time"></td>
+          <td id="city"></td> <!-- Tampilkan kota di sini -->
+        </tr>
+      </tbody>
     </table>
   </div>
+
+  <!-- Tabel Tanggal dan Koordinat -->
   <div class="table-container" id="info">
     <table>
-      <thead><tr><th>Tanggal</th><th>Tanggal Hijriah</th><th>Kota</th><th>Latitude</th><th>Longitude</th></tr></thead>
-      <tbody><tr><td id="gregorian-date"></td><td id="hijri-date"></td><td id="city"></td><td id="latitude"></td><td id="longitude"></td></tr></tbody>
+      <thead>
+        <tr>
+          <th>Tanggal</th>
+          <th>Tanggal Hijriah</th>
+          <th>Latitude</th>
+          <th>Longitude</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td id="gregorian-date"></td>
+          <td id="hijri-date"></td>
+          <td id="latitude"></td>
+          <td id="longitude"></td>
+        </tr>
+      </tbody>
     </table>
   </div>
+
+  <!-- Jadwal Sholat -->
   <div class="table-container" id="jadwal">
     <table>
-      <thead><tr><th>Subuh</th><th>Dzuhur</th><th>Ashar</th><th>Maghrib</th><th>Isya</th></tr></thead>
+      <thead>
+        <tr>
+          <th>Subuh</th>
+          <th>Dzuhur</th>
+          <th>Ashar</th>
+          <th>Maghrib</th>
+          <th>Isya</th>
+        </tr>
+      </thead>
       <tbody></tbody>
     </table>
   </div>
+
+  <!-- Countdown -->
   <div class="table-container" id="countdown-table">
     <table>
-      <thead><tr><th>Waktu</th><th>Sisa</th></tr></thead>
+      <thead>
+        <tr>
+          <th>Waktu</th>
+          <th>Sisa</th>
+        </tr>
+      </thead>
       <tbody id="countdown-body"></tbody>
     </table>
   </div>
 
+  <footer>
+    © Annur Islamic 2025 ||Support By: Mediaga Group || Hubungi <a href="https://ridhosandhika2006.github.io/Website-Portfolio/" target="_blank">klik di sini</a>
   </footer>
 
   <script>
-    // Modal logic (lokasi & notifikasi)
+    // Modal logic
     const hideModal = id => document.getElementById(id).style.display = 'none';
     const showModal = id => document.getElementById(id).style.display = 'flex';
 
@@ -246,12 +288,20 @@
     const realTimeEl = document.getElementById('real-time'),
           tbodyEl    = document.querySelector('#jadwal tbody'),
           countdownBody = document.getElementById('countdown-body');
+
     const bulanHijriah = ["Muharram","Safar","Rabiul Awal","Rabiul Akhir","Jumadil Awal","Jumadil Akhir","Rajab","Syaban","Ramadhan","Syawal","Zulkaidah","Zulhijah"];
     const hijriFmt = new Intl.DateTimeFormat('en-TN-u-ca-islamic',{day:'numeric',month:'numeric',year:'numeric'});
 
     setInterval(() => {
       const now = new Date();
       realTimeEl.textContent = now.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+
+      // Update kota di kolom tabel waktu real-time
+      // Kota sudah diupdate saat fetch, jadi tidak perlu diupdate di sini lagi
+      // Tapi jika ingin memastikan, bisa di sini
+      document.getElementById('city').textContent = document.getElementById('city').textContent || '';
+
+      // Update tanggal
       document.getElementById('gregorian-date').textContent = now.toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
       let d,m,y;
       hijriFmt.formatToParts(now).forEach(p => {
@@ -260,12 +310,14 @@
         if (p.type==='year') y=p.value;
       });
       document.getElementById('hijri-date').textContent = `${d} ${bulanHijriah[m-1]} ${y} H`;
-    },1000);
+    }, 1000);
 
     // Ambil jadwal sholat
     function fetchCityAndTimings(lat,lon) {
       fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
-        .then(r=>r.json()).then(d=> document.getElementById('city').textContent = d.address.city||d.address.town||d.address.village||'');
+        .then(r=>r.json()).then(d=> {
+          document.getElementById('city').textContent = d.address.city || d.address.town || d.address.village || '';
+        });
 
       const ts = Math.floor(Date.now()/1000);
       fetch(`https://api.aladhan.com/v1/timings/${ts}?latitude=${lat}&longitude=${lon}&method=11`)
@@ -306,7 +358,7 @@
               h = ~~(diff/3600000),
               m = ~~((diff%3600000)/60000),
               s = ~~((diff%60000)/1000);
-        countdownBody.innerHTML = `<tr><td>${next.name}</td><td>${h}j ${m}m ${s}d</td></tr>`;
+        document.getElementById('countdown-body').innerHTML = `<tr><td>${next.name}</td><td>${h}j ${m}m ${s}s</td></tr>`;
       },1000);
 
       if (Notification.permission==='granted') {
