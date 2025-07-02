@@ -576,21 +576,58 @@
             }).catch(console.error);
         }
 
+        /**
+         * [REVISED FUNCTION]
+         * Gets user's location with detailed error handling.
+         */
         function getLocation() {
-            const fallbackLat = 3.5952, fallbackLon = 98.6722;
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((pos) => {
-                    fetchPrayerTimings(pos.coords.latitude, pos.coords.longitude);
-                    fetchCityName(pos.coords.latitude, pos.coords.longitude);
-                }, () => {
-                    fetchPrayerTimings(fallbackLat, fallbackLon);
-                    fetchCityName(fallbackLat, fallbackLon);
-                    alert("Izin lokasi ditolak. Menampilkan jadwal & lokasi untuk Medan.");
-                });
-            } else {
+            const fallbackLat = 3.5952; // Medan Latitude
+            const fallbackLon = 98.6722; // Medan Longitude
+            const fallbackCity = "Medan";
+
+            // Handler for all geolocation errors
+            const handleLocationError = (error) => {
+                let message = "Terjadi kesalahan saat mengambil lokasi. ";
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        message = "Izin lokasi ditolak. ";
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        message = "Informasi lokasi tidak tersedia saat ini. ";
+                        break;
+                    case error.TIMEOUT:
+                        message = "Waktu permintaan lokasi habis. ";
+                        break;
+                    default:
+                        message = "Terjadi kesalahan yang tidak diketahui. ";
+                        break;
+                }
+                // Show a clear alert and then load the fallback location
+                alert(message + `Menampilkan jadwal & lokasi untuk ${fallbackCity}.`);
                 fetchPrayerTimings(fallbackLat, fallbackLon);
                 fetchCityName(fallbackLat, fallbackLon);
-                alert("Browser tidak mendukung lokasi. Menampilkan jadwal & lokasi untuk Medan.");
+            };
+
+            // Check if geolocation is supported by the browser
+            if (navigator.geolocation) {
+                const options = {
+                    enableHighAccuracy: true, // Request a more accurate position
+                    timeout: 10000,           // 10 seconds before timeout
+                    maximumAge: 0             // Don't use a cached position
+                };
+                navigator.geolocation.getCurrentPosition(
+                    (position) => { // Success callback
+                        fetchPrayerTimings(position.coords.latitude, position.coords.longitude);
+                        fetchCityName(position.coords.latitude, position.coords.longitude);
+                    }, 
+                    handleLocationError, // Error callback
+                    options // Geolocation options
+                );
+            } else {
+                // Geolocation is not supported by this browser
+                alert(`Browser tidak mendukung geolokasi. Menampilkan jadwal & lokasi untuk ${fallbackCity}.`);
+                fetchPrayerTimings(fallbackLat, fallbackLon);
+                fetchCityName(fallbackLat, fallbackLon);
             }
         }
 
@@ -788,4 +825,4 @@
     });
 </script>
 </body>
-  </html>
+</html>
