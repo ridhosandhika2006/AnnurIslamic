@@ -453,11 +453,10 @@
         // --- PRAYER TIMES FEATURE ---
         const prayerUIData = { Imsak: { icon: '—', checkable: false }, Fajr: { icon: '—', checkable: true }, Sunrise: { icon: '—', checkable: false }, Dhuhr: { icon: '—', checkable: true }, Asr: { icon: '—', checkable: true }, Maghrib: { icon: '—', checkable: true }, Isha: { icon: '—', checkable: true } };
 
-        // [DIPERBARUI] Fungsi untuk menambah 2 menit ke waktu
         function adjustTimeByTwoMinutes(timeString) {
             const [h, m] = timeString.split(':').map(Number);
             const date = new Date();
-            date.setHours(h, m + 2, 0, 0); // Set jam dan menit, reset detik
+            date.setHours(h, m + 2, 0, 0); 
             return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
         }
 
@@ -499,18 +498,15 @@
             prayerListContainerEl.innerHTML = prayerHtml;
         }
 
-        // [DIPERBARUI] Logika hitung mundur yang lebih akurat dan mencakup Imsak
         function startCountdown(prayerTimes) {
             if (countdownInterval) clearInterval(countdownInterval);
             
-            // Urutan waktu sholat termasuk Imsak
             const prayerOrder = ['Imsak', 'Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
             
             function update() {
                 const now = new Date();
                 let nextPrayerTime, nextPrayerName;
 
-                // 1. Cari waktu sholat berikutnya di hari yang sama
                 for (const name of prayerOrder) {
                     const prayerDate = new Date(`${now.toDateString()} ${prayerTimes[name]}`);
                     if (prayerDate > now) {
@@ -520,7 +516,6 @@
                     }
                 }
 
-                // 2. Jika tidak ada, berarti sholat berikutnya adalah Imsak keesokan harinya
                 if (!nextPrayerTime) {
                     const tomorrow = new Date(now);
                     tomorrow.setDate(now.getDate() + 1);
@@ -528,7 +523,6 @@
                     nextPrayerName = 'Imsak';
                 }
 
-                // 3. Hitung selisih waktu dan tampilkan
                 const diff = nextPrayerTime - now;
                 if (diff < 0) return;
 
@@ -564,7 +558,6 @@
             }).catch(console.error);
         }
 
-        // [DIPERBARUI] Fungsi fetchPrayerTimings untuk menambahkan 2 menit
         function fetchPrayerTimings(lat, lon) {
             const ts = Math.floor(Date.now() / 1000);
             fetch(`https://api.aladhan.com/v1/timings/${ts}?latitude=${lat}&longitude=${lon}&method=11`).then(r => r.json()).then(j => {
@@ -572,7 +565,6 @@
                     const originalTimings = j.data.timings;
                     const adjustedTimings = {};
 
-                    // Tambahkan 2 menit ke setiap waktu sholat
                     for (const key in originalTimings) {
                         adjustedTimings[key] = adjustTimeByTwoMinutes(originalTimings[key]);
                     }
@@ -723,6 +715,22 @@
                 saveDzikirState();
             });
         }
+        
+        // --- NOTIFICATION FEATURE ---
+        function setupNotifications() {
+            if (!("Notification" in window)) {
+                console.log("Browser ini tidak mendukung notifikasi desktop");
+            } else if (Notification.permission === "granted") {
+                console.log("Izin notifikasi sudah diberikan.");
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(function (permission) {
+                    if (permission === "granted") {
+                        console.log("Izin notifikasi diberikan.");
+                        new Notification("Terima kasih! Notifikasi telah diaktifkan.");
+                    }
+                });
+            }
+        }
 
         // --- SETTINGS & LANGUAGE ---
         function setLanguage(lang) {
@@ -770,6 +778,7 @@
         // --- INITIALIZATION ---
         setupNavigation();
         setupSettings();
+        setupNotifications();
         setupDoaHarian();
         setupDzikir();
         getLocation();
