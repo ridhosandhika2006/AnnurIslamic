@@ -1,1390 +1,791 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Annur Islamic</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --primary-bg: #f0f4f8;
-      --header-bg: #0d264a;
-      --header-text: #ffffff;
-      --accent-color: #f9d788;
-      --text-color: #333333;
-      --text-light: #888;
-      --card-bg: #ffffff;
-      --card-shadow: rgba(0, 0, 0, 0.08);
-      --radius: 12px;
-      --transition: 0.3s ease;
-      --active-tab: #0d264a;
-      --bookmark-active: #ffc107;
-      --tap-area-bg: #e9eef2;
-    }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Annur Islamic</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary-bg: #f0f4f8;
+      --header-bg: #0d264a;
+      --header-text: #ffffff;
+      --accent-color: #f9d788;
+      --text-color: #333333;
+      --text-light: #888;
+      --card-bg: #ffffff;
+      --card-shadow: rgba(0, 0, 0, 0.08);
+      --radius: 12px;
+      --transition: 0.3s ease;
+      --active-tab: #0d264a;
+      --bookmark-active: #ffc107;
+      --tap-area-bg: #e9eef2;
+    }
 
-    body.dark-mode {
-      --primary-bg: #121212;
-      --header-bg: #1a1a2e;
-      --header-text: #e0e0e0;
-      --text-color: #e0e0e0;
-      --text-light: #aaa;
-      --card-bg: #1e1e1e;
-      --card-shadow: rgba(255, 255, 255, 0.05);
-      --active-tab: #f9d788;
-      --tap-area-bg: #2c2c3a;
-    }
+    body.dark-mode {
+      --primary-bg: #121212;
+      --header-bg: #1a1a2e;
+      --header-text: #e0e0e0;
+      --text-color: #e0e0e0;
+      --text-light: #aaa;
+      --card-bg: #1e1e1e;
+      --card-shadow: rgba(255, 255, 255, 0.05);
+      --active-tab: #f9d788;
+      --tap-area-bg: #2c2c3a;
+    }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    body {
-      font-family: 'Poppins', sans-serif;
-      color: var(--text-color);
-      background-color: var(--primary-bg);
-      -webkit-user-select: none; user-select: none;
-      transition: background-color var(--transition), color var(--transition);
-    }
-    .app-container { width: 100%; max-width: 420px; margin: 0 auto; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-color);
+      background-color: var(--primary-bg);
+      -webkit-user-select: none; user-select: none;
+      transition: background-color var(--transition), color var(--transition);
+    }
+    .app-container { width: 100%; max-width: 420px; margin: 0 auto; }
 
-    /* --- COMMON VIEW STYLES --- */
-    .view-header { display: flex; align-items: center; margin-bottom: 1.5rem; position: relative; justify-content: center; padding: 0 1rem; }
-    .back-button { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.5rem; cursor: pointer; color: var(--text-color); padding: 0.5rem; }
-    .view-header h2 { font-size: 1.2rem; font-weight: 600; text-align: center; }
+    /* --- COMMON VIEW STYLES --- */
+    .view-header { display: flex; align-items: center; margin-bottom: 1.5rem; position: relative; justify-content: center; padding: 0 1rem; }
+    .back-button { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.5rem; cursor: pointer; color: var(--text-color); padding: 0.5rem; }
+    .view-header h2 { font-size: 1.2rem; font-weight: 600; text-align: center; }
 
-    /* --- LAYAR UTAMA (JADWAL SHOLAT) --- */
-    #prayer-times-view { padding-bottom: 2rem; }
-    #prayer-times-view .main-header {
-      background: var(--header-bg); color: var(--header-text); padding: 1.5rem 1.5rem 3.5rem 1.5rem;
-      border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; text-align: center;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); position: relative; transition: background-color var(--transition);
-    }
-    #prayer-times-view .main-header h1 { font-size: 1.5rem; font-weight: 700; color: var(--accent-color); margin-bottom: 0.25rem; }
-    #prayer-times-view .main-header p { font-size: 0.9rem; color: var(--header-text); opacity: 0.9; margin-bottom: 0.5rem; }
-    #prayer-times-view #countdown-timer { font-size: 2.25rem; font-weight: 700; color: var(--header-text); letter-spacing: 2px; }
-    #prayer-times-view #location-display { position: absolute; top: 1.2rem; right: 1.2rem; display: flex; align-items: center; background: rgba(255, 255, 255, 0.15); padding: 0.4rem 0.8rem; border-radius: var(--radius); font-size: 0.8rem; font-weight: 500; color: var(--header-text); border: 1px solid rgba(255, 255, 255, 0.2); }
-    #prayer-times-view #location-display .icon { margin-right: 0.4rem; }
-    #prayer-times-view .calendar-section { background-color: var(--card-bg); border-radius: var(--radius); margin: -2.5rem 1rem 1rem 1rem; padding: 1rem; box-shadow: 0 4px 10px var(--card-shadow); position: relative; z-index: 10; transition: background-color var(--transition); }
-    #prayer-times-view .date-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; font-size: 0.9rem; font-weight: 600; }
-    #prayer-times-view .date-header .hijri-date { color: var(--header-bg); }
-    #prayer-times-view .date-header .gregorian-date { color: var(--text-light); font-weight: 400; }
-    #prayer-times-view .calendar-view { display: flex; justify-content: space-around; text-align: center; }
-    #prayer-times-view .day { display: flex; flex-direction: column; align-items: center; }
-    #prayer-times-view .day .day-name { font-size: 0.75rem; color: #999; margin-bottom: 0.5rem; }
-    #prayer-times-view .day .day-number { font-size: 1rem; font-weight: 600; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
-    #prayer-times-view .day.today .day-number { background-color: var(--header-bg); color: var(--header-text); }
-    #prayer-times-view .prayer-list-section { padding: 0 1rem; }
-    #prayer-times-view .prayer-item { display: flex; align-items: center; justify-content: space-between; background-color: var(--card-bg); padding: 1rem; border-radius: var(--radius); margin-bottom: 0.75rem; box-shadow: 0 2px 5px var(--card-shadow); transition: transform var(--transition), background-color var(--transition); }
-    #prayer-times-view .prayer-item .icon-status { font-size: 1.5rem; color: var(--header-bg); margin-right: 1rem; }
-    #prayer-times-view .prayer-details { flex-grow: 1; min-width: 0; }
-    #prayer-times-view .prayer-details .prayer-name { font-weight: 600; font-size: 1rem; }
-    #prayer-times-view .prayer-details .prayer-desc { font-size: 0.75rem; color: var(--text-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    #prayer-times-view .prayer-time-action { display: flex; align-items: center; gap: 0.75rem; margin-left: 0.5rem; }
-    #prayer-times-view .prayer-time { font-size: 1.1rem; font-weight: 600; }
-    #prayer-times-view .prayer-action { font-size: 1.25rem; color: #aaa; }
+    /* --- LAYAR UTAMA (JADWAL SHOLAT) --- */
+    #prayer-times-view { padding-bottom: 2rem; }
+    #prayer-times-view .main-header {
+      background: var(--header-bg); color: var(--header-text); padding: 1.5rem 1.5rem 3.5rem 1.5rem;
+      border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); position: relative; transition: background-color var(--transition);
+    }
+    #prayer-times-view .main-header h1 { font-size: 1.5rem; font-weight: 700; color: var(--accent-color); margin-bottom: 0.25rem; }
+    #prayer-times-view .main-header p { font-size: 0.9rem; color: var(--header-text); opacity: 0.9; margin-bottom: 0.5rem; }
+    #prayer-times-view #countdown-timer { font-size: 2.25rem; font-weight: 700; color: var(--header-text); letter-spacing: 2px; }
+    #prayer-times-view #location-display { position: absolute; top: 1.2rem; right: 1.2rem; display: flex; align-items: center; background: rgba(255, 255, 255, 0.15); padding: 0.4rem 0.8rem; border-radius: var(--radius); font-size: 0.8rem; font-weight: 500; color: var(--header-text); border: 1px solid rgba(255, 255, 255, 0.2); }
+    #prayer-times-view #location-display .icon { margin-right: 0.4rem; }
+    #prayer-times-view .calendar-section { background-color: var(--card-bg); border-radius: var(--radius); margin: -2.5rem 1rem 1rem 1rem; padding: 1rem; box-shadow: 0 4px 10px var(--card-shadow); position: relative; z-index: 10; transition: background-color var(--transition); }
+    #prayer-times-view .date-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; font-size: 0.9rem; font-weight: 600; }
+    #prayer-times-view .date-header .hijri-date { color: var(--header-bg); }
+    #prayer-times-view .date-header .gregorian-date { color: var(--text-light); font-weight: 400; }
+    #prayer-times-view .calendar-view { display: flex; justify-content: space-around; text-align: center; }
+    #prayer-times-view .day { display: flex; flex-direction: column; align-items: center; }
+    #prayer-times-view .day .day-name { font-size: 0.75rem; color: #999; margin-bottom: 0.5rem; }
+    #prayer-times-view .day .day-number { font-size: 1rem; font-weight: 600; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+    #prayer-times-view .day.today .day-number { background-color: var(--header-bg); color: var(--header-text); }
+    #prayer-times-view .prayer-list-section { padding: 0 1rem; }
+    #prayer-times-view .prayer-item { display: flex; align-items: center; justify-content: space-between; background-color: var(--card-bg); padding: 1rem; border-radius: var(--radius); margin-bottom: 0.75rem; box-shadow: 0 2px 5px var(--card-shadow); transition: transform var(--transition), background-color var(--transition); }
+    #prayer-times-view .prayer-item .icon-status { font-size: 1.5rem; color: var(--header-bg); margin-right: 1rem; }
+    #prayer-times-view .prayer-details { flex-grow: 1; min-width: 0; }
+    #prayer-times-view .prayer-details .prayer-name { font-weight: 600; font-size: 1rem; }
+    #prayer-times-view .prayer-details .prayer-desc { font-size: 0.75rem; color: var(--text-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #prayer-times-view .prayer-time-action { display: flex; align-items: center; gap: 0.75rem; margin-left: 0.5rem; }
+    #prayer-times-view .prayer-time { font-size: 1.1rem; font-weight: 600; }
+    #prayer-times-view .prayer-action { font-size: 1.25rem; color: #aaa; }
 
-    /* --- TAMPILAN DOA HARIAN --- */
-    #doa-view { padding-top: 1.5rem; padding-bottom: 2rem; }
-    .last-read-card { background-color: var(--card-bg); border-radius: var(--radius); padding: 1rem; margin: 0 1rem 1.5rem 1rem; box-shadow: 0 2px 5px var(--card-shadow); cursor: pointer;}
-    .last-read-card h3 { font-size: 0.8rem; text-transform: uppercase; color: var(--text-light); margin-bottom: 0.5rem; font-weight: 500; }
-    .last-read-card p { font-weight: 600; font-size: 1rem; }
-    .tabs-container { display: flex; border-bottom: 2px solid #e0e0e0; margin: 0 1rem 1rem 1rem; }
-    body.dark-mode .tabs-container { border-bottom-color: #333; }
-    .tab-item { flex: 1; text-align: center; padding: 0.8rem 0; font-weight: 600; font-size: 0.9rem; color: var(--text-light); cursor: pointer; position: relative; }
-    .tab-item.active { color: var(--active-tab); }
-    .tab-item.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background-color: var(--active-tab); }
-    .doa-list-container { padding: 0 0.5rem; }
-    .doa-list-item { display: flex; align-items: center; padding: 0.8rem 0.5rem; border-bottom: 1px solid #eee; cursor: pointer; }
-    body.dark-mode .doa-list-item { border-bottom-color: #333; }
-    .doa-list-item .num { font-weight: 500; color: var(--text-light); width: 2rem; flex-shrink: 0; }
-    .doa-list-item .details { flex-grow: 1; min-width: 0; margin-right: 0.5rem; }
-    .doa-list-item .details .title { font-weight: 600; }
-    .doa-list-item .details .subtitle { font-size: 0.8rem; color: var(--text-light); }
-    .doa-list-item .arabic { font-size: 1.2rem; font-weight: 500; color: var(--text-color); white-space: nowrap; }
-    
-    /* --- TAMPILAN DZIKIR --- */
-    #dzikir-view { padding-top: 1.5rem; padding-bottom: 2rem; }
-    .dzikir-list-container { padding: 0 1rem; }
-    .dzikir-item { background-color: var(--card-bg); padding: 1rem; border-radius: var(--radius); margin-bottom: 0.75rem; box-shadow: 0 2px 5px var(--card-shadow); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: transform 0.2s ease; }
-    .dzikir-item:active { transform: scale(0.98); }
-    .dzikir-item-info { display: flex; flex-direction: column; }
-    .dzikir-item-info .title { font-weight: 600; font-size: 1.1rem; }
-    .dzikir-item-info .timestamp { font-size: 0.75rem; color: var(--text-light); }
-    .dzikir-item-progress { text-align: right; }
-    .dzikir-item-progress .count { font-size: 1.1rem; font-weight: 600; }
-    .dzikir-item-progress .lap { font-size: 0.75rem; color: var(--text-light); }
+    /* --- TAMPILAN DOA HARIAN --- */
+    #doa-view { padding-top: 1.5rem; padding-bottom: 2rem; }
+    .last-read-card { background-color: var(--card-bg); border-radius: var(--radius); padding: 1rem; margin: 0 1rem 1.5rem 1rem; box-shadow: 0 2px 5px var(--card-shadow); cursor: pointer;}
+    .last-read-card h3 { font-size: 0.8rem; text-transform: uppercase; color: var(--text-light); margin-bottom: 0.5rem; font-weight: 500; }
+    .last-read-card p { font-weight: 600; font-size: 1rem; }
+    .tabs-container { display: flex; border-bottom: 2px solid #e0e0e0; margin: 0 1rem 1rem 1rem; }
+    body.dark-mode .tabs-container { border-bottom-color: #333; }
+    .tab-item { flex: 1; text-align: center; padding: 0.8rem 0; font-weight: 600; font-size: 0.9rem; color: var(--text-light); cursor: pointer; position: relative; }
+    .tab-item.active { color: var(--active-tab); }
+    .tab-item.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background-color: var(--active-tab); }
+    .doa-list-container { padding: 0 0.5rem; }
+    .doa-list-item { display: flex; align-items: center; padding: 0.8rem 0.5rem; border-bottom: 1px solid #eee; cursor: pointer; }
+    body.dark-mode .doa-list-item { border-bottom-color: #333; }
+    .doa-list-item .num { font-weight: 500; color: var(--text-light); width: 2rem; flex-shrink: 0; }
+    .doa-list-item .details { flex-grow: 1; min-width: 0; margin-right: 0.5rem; }
+    .doa-list-item .details .title { font-weight: 600; }
+    .doa-list-item .details .subtitle { font-size: 0.8rem; color: var(--text-light); }
+    .doa-list-item .arabic { font-size: 1.2rem; font-weight: 500; color: var(--text-color); white-space: nowrap; }
+    
+    /* --- TAMPILAN DZIKIR --- */
+    #dzikir-view { padding-top: 1.5rem; padding-bottom: 2rem; }
+    .dzikir-list-container { padding: 0 1rem; }
+    .dzikir-item { background-color: var(--card-bg); padding: 1rem; border-radius: var(--radius); margin-bottom: 0.75rem; box-shadow: 0 2px 5px var(--card-shadow); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: transform 0.2s ease; }
+    .dzikir-item:active { transform: scale(0.98); }
+    .dzikir-item-info { display: flex; flex-direction: column; }
+    .dzikir-item-info .title { font-weight: 600; font-size: 1.1rem; }
+    .dzikir-item-info .timestamp { font-size: 0.75rem; color: var(--text-light); }
+    .dzikir-item-progress { text-align: right; }
+    .dzikir-item-progress .count { font-size: 1.1rem; font-weight: 600; }
+    .dzikir-item-progress .lap { font-size: 0.75rem; color: var(--text-light); }
 
-    /* --- TAMPILAN TASBIH --- */
-    #tasbih-view { display: none; flex-direction: column; height: 100vh; padding-top: 1.5rem; }
-    #tasbih-view .view-header { flex-shrink: 0; }
-    #tasbih-view .tasbih-main { flex-grow: 1; display: flex; flex-direction: column; justify-content: space-around; align-items: center; padding: 1rem; }
-    #tasbih-counter-display { text-align: center; }
-    #tasbih-counter-display .count { font-size: 4rem; font-weight: 700; }
-    #tasbih-counter-display .target { font-size: 1.2rem; color: var(--text-light); }
-    #tasbih-tap-area { width: 220px; height: 220px; background-color: var(--tap-area-bg); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 5px 15px var(--card-shadow); transition: transform 0.1s ease; }
-    #tasbih-tap-area:active { transform: scale(0.95); }
-    #tasbih-tap-area .tap-icon { font-size: 4rem; color: var(--text-light); }
-    #tasbih-reset-btn { background: none; border: 2px solid var(--text-light); color: var(--text-light); font-size: 1rem; padding: 0.6rem 1.5rem; border-radius: 2rem; cursor: pointer; transition: background-color var(--transition); }
-    #tasbih-reset-btn:active { background-color: rgba(136, 136, 136, 0.2); }
+    /* --- TAMPILAN TASBIH --- */
+    #tasbih-view { display: none; flex-direction: column; height: 100vh; padding-top: 1.5rem; }
+    #tasbih-view .view-header { flex-shrink: 0; }
+    #tasbih-view .tasbih-main { flex-grow: 1; display: flex; flex-direction: column; justify-content: space-around; align-items: center; padding: 1rem; }
+    #tasbih-counter-display { text-align: center; }
+    #tasbih-counter-display .count { font-size: 4rem; font-weight: 700; }
+    #tasbih-counter-display .target { font-size: 1.2rem; color: var(--text-light); }
+    #tasbih-tap-area { width: 220px; height: 220px; background-color: var(--tap-area-bg); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 5px 15px var(--card-shadow); transition: transform 0.1s ease; }
+    #tasbih-tap-area:active { transform: scale(0.95); }
+    #tasbih-tap-area .tap-icon { font-size: 4rem; color: var(--text-light); }
+    #tasbih-reset-btn { background: none; border: 2px solid var(--text-light); color: var(--text-light); font-size: 1rem; padding: 0.6rem 1.5rem; border-radius: 2rem; cursor: pointer; transition: background-color var(--transition); }
+    #tasbih-reset-btn:active { background-color: rgba(136, 136, 136, 0.2); }
 
-    /* --- SIDEBAR & MODAL (CSS UMUM) --- */
-    #menu-toggle { position: absolute; top: 1.2rem; left: 1.2rem; width: 40px; height: 40px; background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius); cursor: pointer; z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 8px; transition: all var(--transition); }
-    #menu-toggle .bar { display: block; width: 100%; height: 2px; background: var(--header-text); margin: 3px 0; transition: all var(--transition); border-radius: 2px; }
-    #sidebar { position: fixed; top: 0; left: -300px; width: 280px; height: 100%; background: var(--card-bg); box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1); padding: 1.5rem; transition: left var(--transition), background-color var(--transition); z-index: 1500; overflow-y: auto; }
-    #sidebar.open { left: 0; }
-    #sidebar h3 { font-size: 1.2rem; font-weight: 600; color: var(--header-bg); margin-top: 3rem; margin-bottom: 1.5rem; }
-    #sidebar ul { list-style: none; padding: 0; }
-    #sidebar ul li a { display: block; padding: 0.8rem 1rem; text-decoration: none; color: var(--text-color); font-weight: 500; border-radius: var(--radius); transition: background-color var(--transition), color var(--transition); }
-    #sidebar ul li a:hover, #sidebar ul li a.active { background-color: var(--header-bg); color: var(--header-text); }
-    
-    .full-modal { position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; }
-    .full-modal .modal-content { background-color: var(--primary-bg); color: var(--text-color); padding: 0; border-radius: var(--radius); width: 90%; max-width: 400px; max-height: 85%; box-shadow: 0 5px 20px rgba(0,0,0,0.2); animation: modal-appear 0.4s ease; display: flex; flex-direction: column; }
-    @keyframes modal-appear { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .full-modal .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-bottom: 1px solid #ddd; }
-    body.dark-mode .full-modal .modal-header { border-bottom-color: #444; }
-    .full-modal .modal-header h3 { color: var(--header-bg); font-size: 1.1rem; flex-grow: 1; text-align: center; margin: 0 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .full-modal .close-button { font-size: 2rem; color: #aaa; cursor: pointer; font-weight: 300; }
-    .full-modal .modal-header .action-icon { font-size: 1.5rem; cursor: pointer; color: var(--text-light); }
-    .full-modal .modal-header .action-icon.bookmarked { color: var(--bookmark-active); }
-    .full-modal .modal-body { padding: 1.5rem; overflow-y: auto; flex-grow: 1; }
+    /* --- SIDEBAR & MODAL (CSS UMUM) --- */
+    #menu-toggle { position: absolute; top: 1.2rem; left: 1.2rem; width: 40px; height: 40px; background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius); cursor: pointer; z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 8px; transition: all var(--transition); }
+    #menu-toggle .bar { display: block; width: 100%; height: 2px; background: var(--header-text); margin: 3px 0; transition: all var(--transition); border-radius: 2px; }
+    #sidebar { position: fixed; top: 0; left: -300px; width: 280px; height: 100%; background: var(--card-bg); box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1); padding: 1.5rem; transition: left var(--transition), background-color var(--transition); z-index: 1500; overflow-y: auto; }
+    #sidebar.open { left: 0; }
+    #sidebar h3 { font-size: 1.2rem; font-weight: 600; color: var(--header-bg); margin-top: 3rem; margin-bottom: 1.5rem; }
+    #sidebar ul { list-style: none; padding: 0; }
+    #sidebar ul li a { display: block; padding: 0.8rem 1rem; text-decoration: none; color: var(--text-color); font-weight: 500; border-radius: var(--radius); transition: background-color var(--transition), color var(--transition); }
+    #sidebar ul li a:hover, #sidebar ul li a.active { background-color: var(--header-bg); color: var(--header-text); }
+    
+    .full-modal { position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; }
+    .full-modal .modal-content { background-color: var(--primary-bg); color: var(--text-color); padding: 0; border-radius: var(--radius); width: 90%; max-width: 400px; max-height: 85%; box-shadow: 0 5px 20px rgba(0,0,0,0.2); animation: modal-appear 0.4s ease; display: flex; flex-direction: column; }
+    @keyframes modal-appear { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .full-modal .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-bottom: 1px solid #ddd; }
+    body.dark-mode .full-modal .modal-header { border-bottom-color: #444; }
+    .full-modal .modal-header h3 { color: var(--header-bg); font-size: 1.1rem; flex-grow: 1; text-align: center; margin: 0 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .full-modal .close-button { font-size: 2rem; color: #aaa; cursor: pointer; font-weight: 300; }
+    .full-modal .modal-header .action-icon { font-size: 1.5rem; cursor: pointer; color: var(--text-light); }
+    .full-modal .modal-header .action-icon.bookmarked { color: var(--bookmark-active); }
+    .full-modal .modal-body { padding: 1.5rem; overflow-y: auto; flex-grow: 1; }
 
-    /* STYLE KONTEN MODAL */
-    .settings-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid #eee; }
-    body.dark-mode .settings-item { border-bottom-color: #333; }
-    .settings-item:last-child { border-bottom: none; }
-    .settings-item label { font-weight: 500; }
-    .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
-    .switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; border-radius: 28px; transition: var(--transition); }
-    .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; border-radius: 50%; transition: var(--transition); }
-    input:checked + .slider { background-color: var(--header-bg); }
-    input:checked + .slider:before { transform: translateX(22px); }
-    .language-select { padding: 0.5rem; border-radius: 8px; border: 1px solid #ccc; background-color: var(--card-bg); color: var(--text-color); max-width: 150px; }
-    body.dark-mode .language-select { border-color: #555; }
-    .single-doa-arabic { font-size: 2rem; line-height: 3rem; text-align: right; direction: rtl; margin-bottom: 1.5rem; }
-    .single-doa-arti { font-size: 0.9rem; font-style: italic; color: #666; line-height: 1.5rem; }
-    body.dark-mode .single-doa-arti { color: #ccc; }
-  </style>
+    /* STYLE KONTEN MODAL */
+    .settings-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid #eee; }
+    body.dark-mode .settings-item { border-bottom-color: #333; }
+    .settings-item:last-child { border-bottom: none; }
+    .settings-item label { font-weight: 500; }
+    .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; border-radius: 28px; transition: var(--transition); }
+    .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; border-radius: 50%; transition: var(--transition); }
+    input:checked + .slider { background-color: var(--header-bg); }
+    input:checked + .slider:before { transform: translateX(22px); }
+    .language-select { padding: 0.5rem; border-radius: 8px; border: 1px solid #ccc; background-color: var(--card-bg); color: var(--text-color); max-width: 150px; }
+    body.dark-mode .language-select { border-color: #555; }
+    .single-doa-arabic { font-size: 2rem; line-height: 3rem; text-align: right; direction: rtl; margin-bottom: 1.5rem; }
+    .single-doa-arti { font-size: 0.9rem; font-style: italic; color: #666; line-height: 1.5rem; }
+    body.dark-mode .single-doa-arti { color: #ccc; }
+  </style>
 </head>
 <body>
-  <nav id="sidebar">
-    <h3 data-key="nav_title">Menu Navigasi</h3>
-    <ul>
-      <li><a href="#" id="prayer-times-btn">🕒 Jadwal Sholat</a></li>
-      <li><a href="#" id="doa-harian-btn" data-key="nav_doa">🤲 Doa Harian</a></li>
-      <li><a href="#" data-key="nav_quran">📖 Al-Qur'an</a></li>
-      <li><a href="#" id="dzikir-btn" data-key="nav_dzikir">📿 Dzikir</a></li>
-      <li><a href="#" data-key="nav_kiblat">🧭 Kiblat</a></li>
-      <li><a href="#" id="settings-btn" data-key="nav_settings">⚙️ Pengaturan</a></li>
-    </ul>
-  </nav>
+  <nav id="sidebar">
+    <h3 data-key="nav_title">Menu Navigasi</h3>
+    <ul>
+      <li><a href="#" id="prayer-times-btn">🕒 Jadwal Sholat</a></li>
+      <li><a href="#" id="doa-harian-btn" data-key="nav_doa">🤲 Doa Harian</a></li>
+      <li><a href="#" data-key="nav_quran">📖 Al-Qur'an</a></li>
+      <li><a href="#" id="dzikir-btn" data-key="nav_dzikir">📿 Dzikir</a></li>
+      <li><a href="#" data-key="nav_kiblat">🧭 Kiblat</a></li>
+      <li><a href="#" id="settings-btn" data-key="nav_settings">⚙️ Pengaturan</a></li>
+    </ul>
+  </nav>
 
-  <div class="app-container">
-    <div id="prayer-times-view" class="main-view">
-        <header class="main-header">
-          <button id="menu-toggle"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
-          <div id="location-display"><span class="icon">📍</span><span id="city-name">Memuat...</span></div>
-          <h1 id="next-prayer-name">Imsak</h1>
-          <p data-key="remaining_time">Waktu Tersisa</p>
-          <div id="countdown-timer">00:00:00</div>
-        </header>
-        <section class="calendar-section">
-          <div class="date-header">
-            <span class="hijri-date" id="hijri-date-display">...</span>
-            <span class="gregorian-date" id="gregorian-date-display">...</span>
-          </div>
-          <div class="calendar-view" id="calendar-view-container"></div>
-        </section>
-        <main class="prayer-list-section" id="prayer-list-container"></main>
-        <div style="text-align: center; padding: 20px; color: var(--text-light); font-weight: 500;">
-            Annur Islamic
-        </div>
-    </div>
+  <div class="app-container">
+    <div id="prayer-times-view" class="main-view">
+        <header class="main-header">
+          <button id="menu-toggle"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+          <div id="location-display"><span class="icon">📍</span><span id="city-name">Memuat...</span></div>
+          <h1 id="next-prayer-name">Imsak</h1>
+          <p data-key="remaining_time">Waktu Tersisa</p>
+          <div id="countdown-timer">00:00:00</div>
+        </header>
+        <section class="calendar-section">
+          <div class="date-header">
+            <span class="hijri-date" id="hijri-date-display">...</span>
+            <span class="gregorian-date" id="gregorian-date-display">...</span>
+          </div>
+          <div class="calendar-view" id="calendar-view-container"></div>
+        </section>
+        <main class="prayer-list-section" id="prayer-list-container"></main>
+        <div style="text-align: center; padding: 20px; color: var(--text-light); font-weight: 500;">
+            Annur Islamic
+        </div>
+    </div>
 
-    <div id="doa-view" class="main-view" style="display: none;">
-        <div class="view-header">
-            <span class="back-button" data-target-view="prayer-times-view">‹</span>
-            <h2>Doa & Dzikir Harian</h2>
-        </div>
-        <div class="last-read-card" id="last-read-doa-card">
-            <h3 data-key="last_read">TERAKHIR DIBACA</h3>
-            <p data-key="no_last_read">Belum ada doa yang dibaca</p>
-        </div>
-        <div class="tabs-container">
-            <div class="tab-item active" data-tab="all" data-key="all_doa">Semua Doa</div>
-            <div class="tab-item" data-tab="bookmarked" data-key="bookmarked">Ditandai</div>
-        </div>
-        <div class="doa-list-container" id="doa-list-container-view"></div>
-    </div>
+    <div id="doa-view" class="main-view" style="display: none;">
+        <div class="view-header">
+            <span class="back-button" data-target-view="prayer-times-view">‹</span>
+            <h2>Doa & Dzikir Harian</h2>
+        </div>
+        <div class="last-read-card" id="last-read-doa-card">
+            <h3 data-key="last_read">TERAKHIR DIBACA</h3>
+            <p data-key="no_last_read">Belum ada doa yang dibaca</p>
+        </div>
+        <div class="tabs-container">
+            <div class="tab-item active" data-tab="all" data-key="all_doa">Semua Doa</div>
+            <div class="tab-item" data-tab="bookmarked" data-key="bookmarked">Ditandai</div>
+        </div>
+        <div class="doa-list-container" id="doa-list-container-view"></div>
+    </div>
 
-    <div id="dzikir-view" class="main-view" style="display: none;">
-        <div class="view-header">
-            <span class="back-button" data-target-view="prayer-times-view">‹</span>
-            <h2>Tasbih Digital</h2>
-        </div>
-        <div class="dzikir-list-container" id="dzikir-list-container">
-            </div>
-    </div>
-  </div>
+    <div id="dzikir-view" class="main-view" style="display: none;">
+        <div class="view-header">
+            <span class="back-button" data-target-view="prayer-times-view">‹</span>
+            <h2>Tasbih Digital</h2>
+        </div>
+        <div class="dzikir-list-container" id="dzikir-list-container">
+            </div>
+    </div>
+  </div>
 
-  <div id="tasbih-view" class="main-view">
-      <div class="view-header">
-          <span class="back-button" data-target-view="dzikir-view">‹</span>
-          <h2 id="tasbih-title">Nama Dzikir</h2>
-      </div>
-      <div class="tasbih-main">
-          <div id="tasbih-counter-display">
-              <div class="count" id="tasbih-current-count">0</div>
-              <div class="target" id="tasbih-target-count">/ 33</div>
-          </div>
-          <div id="tasbih-tap-area">
-              <span class="tap-icon">🖐️</span>
-          </div>
-          <button id="tasbih-reset-btn">Reset</button>
-      </div>
-  </div>
+  <div id="tasbih-view" class="main-view">
+      <div class="view-header">
+          <span class="back-button" data-target-view="dzikir-view">‹</span>
+          <h2 id="tasbih-title">Nama Dzikir</h2>
+      </div>
+      <div class="tasbih-main">
+          <div id="tasbih-counter-display">
+              <div class="count" id="tasbih-current-count">0</div>
+              <div class="target" id="tasbih-target-count">/ 33</div>
+          </div>
+          <div id="tasbih-tap-area">
+              <span class="tap-icon">🖐️</span>
+          </div>
+          <button id="tasbih-reset-btn">Reset</button>
+      </div>
+  </div>
 
 
-  <div id="settings-modal" class="full-modal">
-    <div class="modal-content">
-      <div class="modal-header">
-          <h3 data-key="settings_title">Pengaturan</h3>
-          <span class="close-button">&times;</span>
-      </div>
-      <div class="modal-body">
-        <div class="settings-item">
-          <label for="dark-mode-toggle" data-key="settings_dark_mode">Mode Malam</label>
-          <label class="switch"><input type="checkbox" id="dark-mode-toggle"><span class="slider"></span></label>
-        </div>
-        <div class="settings-item">
-          <label for="language-select" data-key="settings_language">Bahasa</label>
-          <select name="language" id="language-select" class="language-select">
-            <option value="id">Bahasa Indonesia</option>
-            <option value="en">English</option>
-            <option value="ar">العربية (Arabic)</option>
-            <option value="tr">Türkçe (Turkish)</option>
-            <option value="fr">Français (French)</option>
-            <option value="es">Español (Spanish)</option>
-            <option value="de">Deutsch (German)</option>
-            <option value="ru">Русский (Russian)</option>
-            <option value="ur">اردو (Urdu)</option>
-            <option value="bn">বাংলা (Bengali)</option>
-          </select>
-        </div>
-        <div class="settings-item">
-          <label data-key="settings_about">Tentang Aplikasi</label>
-          <span>v2.0.0 (Beta)</span>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div id="settings-modal" class="full-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h3 data-key="settings_title">Pengaturan</h3>
+          <span class="close-button">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="settings-item">
+          <label for="dark-mode-toggle" data-key="settings_dark_mode">Mode Malam</label>
+          <label class="switch"><input type="checkbox" id="dark-mode-toggle"><span class="slider"></span></label>
+        </div>
+        <div class="settings-item">
+          <label for="language-select" data-key="settings_language">Bahasa</label>
+          <select name="language" id="language-select" class="language-select">
+            <option value="id">Bahasa Indonesia</option>
+            <option value="en">English</option>
+            <option value="ar">العربية (Arabic)</option>
+            <option value="tr">Türkçe (Turkish)</option>
+            <option value="fr">Français (French)</option>
+            <option value="es">Español (Spanish)</option>
+            <option value="de">Deutsch (German)</option>
+            <option value="ru">Русский (Russian)</option>
+            <option value="ur">اردو (Urdu)</option>
+            <option value="bn">বাংলা (Bengali)</option>
+          </select>
+        </div>
+        <div class="settings-item">
+          <label data-key="settings_about">Tentang Aplikasi</label>
+          <span>v2.0.0 (Beta)</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <div id="single-doa-modal" class="full-modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <span class="close-button">&times;</span>
-            <h3 id="single-doa-modal-title">Detail Doa</h3>
-            <span class="action-icon" id="bookmark-doa-btn">⭐</span>
-        </div>
-        <div class="modal-body" id="single-doa-modal-body"></div>
-    </div>
-  </div>
+  <div id="single-doa-modal" class="full-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close-button">&times;</span>
+            <h3 id="single-doa-modal-title">Detail Doa</h3>
+            <span class="action-icon" id="bookmark-doa-btn">⭐</span>
+        </div>
+        <div class="modal-body" id="single-doa-modal-body"></div>
+    </div>
+  </div>
 
 <script>
-    // --- DATA ---
-    const dzikirData = [
-      { id: 'dzikir_1', title: 'سبحان الله وبحمده، سبحان الله العظيم', target: 100 },
-      { id: 'dzikir_2', title: 'بسم الله الرحمن الرحيم', target: 33 },
-      { id: 'dzikir_3', title: 'Salawat', target: 33 },
-      { id: 'dzikir_4', title: 'Allahu Akbar', target: 33 },
-      { id: 'dzikir_5', title: 'La ilaha illallah', target: 33 },
-      { id: 'dzikir_6', title: 'Alhamdulillah', target: 33 },
-      { id: 'dzikir_7', title: 'Astaghfirullah', target: 33 },
-    ];
-
-    const doaHarianData = [
-        { id: 1, title: "Doa Bangun Tidur", subtitle: "Adab memulai hari", arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ", arti: "Segala puji bagi Allah yang telah menghidupkan kami setelah mematikan kami, dan kepada-Nya lah kami akan dibangkitkan." },
-        { id: 2, title: "Doa Masuk Toilet", subtitle: "Memohon perlindungan", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ", arti: "Ya Allah, sesungguhnya aku berlindung kepada-Mu dari setan laki-laki dan setan perempuan." },
-        { id: 3, title: "Doa Keluar Toilet", subtitle: "Memohon ampunan", arabic: "غُفْرَانَكَ", arti: "Aku memohon ampunan-Mu." },
-        { id: 4, title: "Doa Sebelum Wudhu", subtitle: "Niat bersuci", arabic: "بِسْمِ اللَّهِ", arti: "Dengan menyebut nama Allah." },
-        { id: 5, title: "Doa Setelah Wudhu", subtitle: "Menyempurnakan wudhu", arabic: "أَشْهَدُ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ", arti: "Aku bersaksi bahwa tiada Tuhan selain Allah semata, tiada sekutu bagi-Nya, dan aku bersaksi bahwa Muhammad adalah hamba dan utusan-Nya." },
-        { id: 6, title: "Doa Mengenakan Pakaian", subtitle: "Mensyukuri nikmat", arabic: "الْحَمْدُ لِلَّهِ الَّذِي كَسَانِي هَذَا وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلاَ قُوَّةٍ", arti: "Segala puji bagi Allah yang telah memberiku pakaian ini dan menganugerahkannya kepadaku tanpa daya dan kekuatan dariku." },
-        { id: 7, title: "Doa Melepas Pakaian", subtitle: "Adab melepas pakaian", arabic: "بِسْمِ اللَّهِ", arti: "Dengan menyebut nama Allah." },
-        { id: 8, title: "Doa Keluar Rumah", subtitle: "Memohon perlindungan", arabic: "بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ لاَ حَوْلَ وَلاَ قُوَّةَ إِلاَّ بِاللَّهِ", arti: "Dengan nama Allah, aku bertawakal kepada Allah, tiada daya dan kekuatan kecuali dengan pertolongan Allah." },
-        { id: 9, title: "Doa Masuk Rumah", subtitle: "Memohon kebaikan", arabic: "بِسْمِ اللَّهِ وَلَجْنَا وَبِسْمِ اللَّهِ خَرَجْنَا وَعَلَى رَبِّنَا تَوَكَّلْنَا", arti: "Dengan nama Allah kami masuk, dan dengan nama Allah kami keluar, dan kepada Tuhan kami, kami bertawakal." },
-        { id: 10, title: "Doa Pergi ke Masjid", subtitle: "Langkah menuju kebaikan", arabic: "اللَّهُمَّ اجْعَلْ فِي قَلْبِي نُورًا وَفِي لِسَانِي نُورًا...", arti: "Ya Allah, jadikanlah cahaya di hatiku, cahaya di lidahku..." },
-        { id: 11, title: "Doa Masuk Masjid", subtitle: "Memohon rahmat", arabic: "اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ", arti: "Ya Allah, bukakanlah untukku pintu-pintu rahmat-Mu." },
-        { id: 12, title: "Doa Keluar Masjid", subtitle: "Memohon karunia", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ", arti: "Ya Allah, sesungguhnya aku memohon kepada-Mu dari karunia-Mu." },
-        { id: 13, title: "Doa Sebelum Makan", subtitle: "Agar makanan berkah", arabic: "بِسْمِ اللَّهِ", arti: "Dengan menyebut nama Allah." },
-        { id: 14, title: "Doa Sesudah Makan", subtitle: "Tanda bersyukur", arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا وَرَZَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلاَ قُوَّةٍ", arti: "Segala puji bagi Allah yang telah memberiku makanan ini dan menganugerahkannya kepadaku tanpa daya dan kekuatan dariku." },
-        { id: 15, title: "Doa Ketika Lupa Basmalah", subtitle: "Jika lupa di awal", arabic: "بِسْمِ اللَّهِ أَوَّلَهُ وَآخِرَهُ", arti: "Dengan nama Allah di awal dan di akhirnya." },
-        { id: 16, title: "Doa Minum Air Zamzam", subtitle: "Memohon kebaikan", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا وَاسِعًا وَشِفَاءً مِنْ كُلِّ دَاءٍ", arti: "Ya Allah, aku memohon kepada-Mu ilmu yang bermanfaat, rezeki yang luas, dan kesembuhan dari segala penyakit." },
-        { id: 17, title: "Doa Berbuka Puasa", subtitle: "Saat berbuka puasa", arabic: "ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ وَثَبَتَ الأَجْرُ إِنْ شَاءَ اللَّهُ", arti: "Telah hilang dahaga, telah basah urat-urat, dan telah tetap pahala, insya Allah." },
-        { id: 18, title: "Doa Sebelum Tidur", subtitle: "Adab mengakhiri hari", arabic: "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا", arti: "Dengan nama-Mu ya Allah aku mati dan aku hidup." },
-        { id: 19, title: "Doa Ketika Mimpi Buruk", subtitle: "Memohon perlindungan", arabic: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ غَضَبِهِ وَعِقَابِهِ وَشَرِّ عِبَادِهِ...", arti: "Aku berlindung dengan kalimat-kalimat Allah yang sempurna dari kemurkaan-Nya, siksa-Nya, dan kejahatan hamba-hamba-Nya..." },
-        { id: 20, title: "Doa Naik Kendaraan", subtitle: "Memohon keselamatan", arabic: "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ", arti: "Maha Suci Dzat yang telah menundukkan semua ini bagi kami padahal kami sebelumnya tidak mampu menguasainya." },
-        { id: 21, title: "Doa Safar (Bepergian)", subtitle: "Memohon kemudahan", arabic: "اللَّهُمَّ هَوِّنْ عَلَيْنَا سَفَرَنَا هَذَا وَاطْوِ عَنَّا بُعْدَهُ", arti: "Ya Allah, mudahkanlah perjalanan kami ini, dan dekatkanlah jaraknya bagi kami." },
-        { id: 22, title: "Doa Tiba di Tujuan", subtitle: "Rasa syukur", arabic: "الْحَمْدُ لِلَّهِ الَّذِي سَلَّمَنِي", arti: "Segala puji bagi Allah yang telah menyelamatkanku." },
-        { id: 23, title: "Doa Menjenguk Orang Sakit", subtitle: "Mendoakan kesembuhan", arabic: "لاَ بَأْسَ طَهُورٌ إِنْ شَاءَ اللَّهُ", arti: "Tidak mengapa, semoga menjadi pembersih (dosa), insya Allah." },
-        { id: 24, title: "Doa Ketika Hujan Turun", subtitle: "Memohon hujan bermanfaat", arabic: "اللَّهُمَّ صَيِّبًا نَافِعًا", arti: "Ya Allah, (jadikanlah hujan ini) hujan yang bermanfaat." },
-        { id: 25, title: "Doa Setelah Hujan", subtitle: "Rahmat dari Allah", arabic: "مُطِرْنَا بِفَضْلِ اللَّهِ وَرَحْمَتِهِ", arti: "Kita diberi hujan karena karunia dan rahmat Allah." },
-        { id: 26, title: "Doa Melihat Petir", subtitle: "Tanda kebesaran Allah", arabic: "سُبْحَانَ الَّذِي يُسَبِّحُ الرَّعْدُ بِحَمْدِهِ وَالْمَلاَئِكَةُ مِنْ خِيفَتِهِ", arti: "Maha Suci Dzat yang petir bertasbih dengan memuji-Nya, dan para malaikat pun (bertasbih) karena takut kepada-Nya." },
-        { id: 27, title: "Doa Ketika Angin Kencang", subtitle: "Memohon kebaikan", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَهَا وَأَعُوذُ بِكَ مِنْ شَرِّهَا", arti: "Ya Allah, aku memohon kepada-Mu kebaikannya dan aku berlindung kepada-Mu dari keburukannya." },
-        { id: 28, title: "Doa Bercermin", subtitle: "Agar akhlak baik", arabic: "اللَّهُمَّ كَمَا حَسَّنْتَ خَلْقِي فَحَسِّنْ خُلُقِي", arti: "Ya Allah, sebagaimana Engkau telah memperindah rupaku, maka perindahlah akhlakku." },
-        { id: 29, title: "Doa untuk Kedua Orang Tua", subtitle: "Tanda bakti", arabic: "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا", arti: "Wahai Tuhanku, ampunilah aku dan kedua orang tuaku, dan sayangilah mereka sebagaimana mereka telah menyayangiku di waktu kecil." },
-        { id: 30, title: "Doa Kebaikan Dunia Akhirat", subtitle: "Doa sapu jagat", arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ", arti: "Ya Tuhan kami, berilah kami kebaikan di dunia dan kebaikan di akhirat, dan peliharalah kami dari siksa neraka." },
-        { id: 31, title: "Doa Sebelum Belajar", subtitle: "Memohon ilmu", arabic: "رَبِّ زِدْنِي عِلْمًا", arti: "Wahai Tuhanku, tambahkanlah ilmu kepadaku." },
-        { id: 32, title: "Doa Sesudah Belajar", subtitle: "Agar ilmu bermanfaat", arabic: "اللَّهُمَّ انْفَعْنِي بِمَا عَلَّمْتَنِي وَعَلِّمْنِي مَا يَنْفَعُنِي وَزِدْنِي عِلْمًا", arti: "Ya Allah, berilah manfaat atas apa yang telah Engkau ajarkan kepadaku, ajarilah aku apa yang bermanfaat bagiku, dan tambahkanlah ilmu kepadaku." },
-        { id: 33, title: "Doa Penutup Majelis", subtitle: "Kaffaratul Majlis", arabic: "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ أَشْهَدُ أَنْ لاَ إِلَهَ إِلاَّ أَنْتَ أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ", arti: "Maha Suci Engkau ya Allah, dan dengan memuji-Mu, aku bersaksi bahwa tiada Tuhan selain Engkau, aku memohon ampun dan bertaubat kepada-Mu." },
-        { id: 34, title: "Doa Ketika Bersin", subtitle: "Mengucap syukur", arabic: "الْحَمْدُ لِلَّهِ", arti: "Segala puji bagi Allah." },
-        { id: 35, title: "Jawaban Ketika Orang Bersin", subtitle: "Mendoakan saudara", arabic: "يَرْحَمُكَ اللَّهُ", arti: "Semoga Allah merahmatimu." },
-        { id: 36, title: "Doa Ketika Marah", subtitle: "Meredam amarah", arabic: "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ", arti: "Aku berlindung kepada Allah dari setan yang terkutuk." },
-        { id: 37, title: "Doa Masuk Pasar", subtitle: "Memohon kebaikan pasar", arabic: "لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ...", arti: "Tiada Tuhan selain Allah semata, tiada sekutu bagi-Nya..." },
-        { id: 38, title: "Doa Ketika Tertimpa Musibah", subtitle: "Kalimat istirja'", arabic: "إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ", arti: "Sesungguhnya kami milik Allah dan kepada-Nya lah kami akan kembali." },
-        { id: 39, title: "Doa untuk Pengantin Baru", subtitle: "Mendoakan keberkahan", arabic: "بَارَكَ اللَّهُ لَكَ وَبَارَكَ عَلَيْكَ وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ", arti: "Semoga Allah memberkahimu, dan memberkahi atasmu, dan mengumpulkan kalian berdua dalam kebaikan." },
-        { id: 40, title: "Doa Ziarah Kubur", subtitle: "Salam kepada ahli kubur", arabic: "السَّلاَمُ عَلَى أَهْلِ الدِّيَارِ مِنَ الْمُؤْمِنِينَ وَالْمُسْلِمِينَ...", arti: "Keselamatan atas penghuni kubur dari kaum mukminin dan muslimin..." },
-        { id: 41, title: "Doa Melihat Hilal", subtitle: "Menyambut bulan baru", arabic: "اللَّهُ أَكْبَرُ، اللَّهُمَّ أَهِلَّهُ عَلَيْنَا بِالْيُمْنِ وَالإِيمَانِ وَالسَّلاَمَةِ وَالإِسْلاَمِ", arti: "Allah Maha Besar, ya Allah, tampakkanlah bulan itu kepada kami dengan membawa keberkahan dan keimanan, keselamatan dan Islam." },
-        { id: 42, title: "Doa Agar Diberi Kesabaran", subtitle: "Memohon keteguhan", arabic: "رَبَّنَا أَفْرِغْ عَلَيْنَا صَبْرًا وَثَبِّتْ أَقْدَامَنَا", arti: "Ya Tuhan kami, limpahkanlah kesabaran kepada kami dan kukuhkanlah pendirian kami." },
-        { id: 43, title: "Doa Mohon Petunjuk", subtitle: "Meminta bimbingan", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى وَالتُّقَى وَالْعَفَافَ وَالْغِنَى", arti: "Ya Allah, aku memohon kepada-Mu petunjuk, ketakwaan, kesucian diri, dan kecukupan." },
-        { id: 44, title: "Doa Terhindar dari Sifat Malas", subtitle: "Memohon semangat", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ", arti: "Ya Allah, aku berlindung kepada-Mu dari kelemahan dan kemalasan." },
-        { id: 45, title: "Doa Agar Diteguhkan Hati", subtitle: "Istiqamah dalam iman", arabic: "يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَى دِينِكَ", arti: "Wahai Dzat yang membolak-balikkan hati, teguhkanlah hatiku di atas agama-Mu." },
-        { id: 46, title: "Doa Memohon Ampunan & Rahmat", subtitle: "Permohonan ampunan", arabic: "رَبَّنَا ظَلَمْنَا أَنْفُسَنَا وَإِنْ لَمْ تَغْفِرْ لَنَا وَتَرْحَمْنَا لَنَكُونَنَّ مِنَ الْخَاسِرِينَ", arti: "Ya Tuhan kami, kami telah menzalimi diri kami sendiri, dan jika Engkau tidak mengampuni kami dan memberi rahmat kepada kami, niscaya kami termasuk orang-orang yang rugi." },
-        { id: 47, title: "Doa Saat Sulit Tidur", subtitle: "Agar tidur nyenyak", arabic: "اللَّهُمَّ غَارَتِ النُّجُومُ وَهَدَأَتِ الْعُيُونُ...", arti: "Ya Allah, bintang-bintang telah terbenam, mata-mata telah terpejam..." },
-        { id: 48, title: "Doa Ketika Memulai Pekerjaan", subtitle: "Memohon kelancaran", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ خَيْرِ هَذَا الْعَمَلِ وَخَيْرِ مَا فِيهِ", arti: "Ya Allah, aku memohon kepada-Mu kebaikan pekerjaan ini dan kebaikan yang ada di dalamnya." },
-        { id: 49, title: "Doa Setelah Selesai Bekerja", subtitle: "Rasa syukur", arabic: "الْحَمْدُ لِلَّهِ الَّذِي بِنِعْمَتِهِ تَتِمُّ الصَّالِحَاتُ", arti: "Segala puji bagi Allah yang dengan nikmat-Nya sempurnalah segala kebaikan." },
-        { id: 50, title: "Doa Ketika Mendengar Kabar Baik", subtitle: "Ekspresi kebahagiaan", arabic: "الْحَمْدُ لِلَّهِ الَّذِي بِنِعْمَتِهِ تَتِمُّ الصَّالِحَاتُ", arti: "Segala puji bagi Allah yang dengan nikmat-Nya sempurnalah segala kebaikan." },
-        { id: 51, title: "Doa Ketika Mendengar Kabar Buruk", subtitle: "Menjaga kesabaran", arabic: "الْحَمْدُ لِلَّهِ عَلَى كُلِّ حَالٍ", arti: "Segala puji bagi Allah atas segala keadaan." },
-        { id: 52, "title": "Doa Memohon Jodoh Terbaik", "subtitle": "Bagi yang belum menikah", "arabic": "رَبِّ لاَ تَذَرْنِي فَرْدًا وَأَنْتَ خَيْرُ الْوَارِثِينَ", "arti": "Ya Tuhanku, janganlah Engkau biarkan aku hidup seorang diri, dan Engkaulah pewaris yang paling baik." },
-        { id: 53, "title": "Doa Mohon Keturunan yang Baik", "subtitle": "Doa Nabi Zakaria", "arabic": "رَبِّ هَبْ لِي مِنْ لَدُنْكَ ذُرِّيَّةً طَيِّبَةً إِنَّكَ سَمِيعُ الدُّعَاءِ", "arti": "Ya Tuhanku, berilah aku dari sisi-Mu seorang anak yang baik. Sesungguhnya Engkau Maha Pendengar doa." },
-        { id: 54, "title": "Doa Agar Terhindar dari Utang", "subtitle": "Memohon kecukupan", "arabic": "اللَّهُمَّ اكْفِنِي بِحَلاَلِكَ عَنْ حَرَامِكَ وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ", "arti": "Ya Allah, cukupkanlah aku dengan yang halal dan jauhkanlah aku dari yang haram, dan cukupkanlah aku dengan karunia-Mu dari bergantung pada selain-Mu." }
-    ];
-    
-    const translations = {
-        'id': { 'nav_title': 'Menu Navigasi', 'nav_doa': '🤲 Doa Harian', 'nav_quran': '📖 Al-Qur\'an', 'nav_dzikir': '📿 Dzikir', 'nav_kiblat': '🧭 Kiblat', 'nav_settings': '⚙️ Pengaturan', 'remaining_time': 'Waktu Tersisa', 'settings_title': 'Pengaturan', 'settings_dark_mode': 'Mode Malam', 'settings_language': 'Bahasa', 'settings_about': 'Tentang Aplikasi', 'last_read': 'TERAKHIR DIBACA', 'no_last_read': 'Belum ada doa yang dibaca', 'all_doa': 'Semua Doa', 'bookmarked': 'Ditandai', 'Imsak': 'Imsak', 'Fajr': 'Subuh', 'Sunrise': 'Terbit', 'Dhuhr': 'Zuhur', 'Asr': 'Asar', 'Maghrib': 'Magrib', 'Isha': 'Isya\'', 'Imsak_desc': 'Notifikasi & Tanpa Suara Azan', 'Fajr_desc': 'Makkah #1 (Fajr)', 'Sunrise_desc': 'Notifikasi & Tanpa Suara Azan', 'Dhuhr_desc': 'Mishary Rashid', 'Asr_desc': 'Mishary Rashid', 'Maghrib_desc': 'Mishary Rashid', 'Isha_desc': 'Mishary Rashid' },
-        'en': { 'nav_title': 'Navigation Menu', 'nav_doa': '🤲 Daily Prayers', 'nav_quran': '📖 Al-Qur\'an', 'nav_dzikir': '📿 Dhikr', 'nav_kiblat': '🧭 Qibla', 'nav_settings': '⚙️ Settings', 'remaining_time': 'Time Remaining', 'settings_title': 'Settings', 'settings_dark_mode': 'Dark Mode', 'settings_language': 'Language', 'settings_about': 'About App', 'last_read': 'LAST READ', 'no_last_read': 'No prayers have been read yet', 'all_doa': 'All Prayers', 'bookmarked': 'Bookmarked', 'Imsak': 'Imsak', 'Fajr': 'Fajr', 'Sunrise': 'Sunrise', 'Dhuhr': 'Dhuhr', 'Asr': 'Asr', 'Maghrib': 'Maghrib', 'Isha': 'Isha', 'Imsak_desc': 'Notification & No Adhan Sound', 'Fajr_desc': 'Makkah #1 (Fajr)', 'Sunrise_desc': 'Notification & No Adhan Sound', 'Dhuhr_desc': 'Mishary Rashid', 'Asr_desc': 'Mishary Rashid', 'Maghrib_desc': 'Mishary Rashid', 'Isha_desc': 'Mishary Rashid' },
-        'ar': { 'nav_title': 'قائمة التنقل', 'nav_doa': '🤲 أدعية يومية', 'nav_quran': '📖 القرآن الكريم', 'nav_dzikir': '📿 أذكار', 'nav_kiblat': '🧭 القبلة', 'nav_settings': '⚙️ الإعدادات', 'remaining_time': 'الوقت المتبقي', 'settings_title': 'الإعدادات', 'settings_dark_mode': 'الوضع الداكن', 'settings_language': 'اللغة', 'settings_about': 'حول التطبيق', 'last_read': 'آخر قراءة', 'no_last_read': 'لم تتم قراءة أي دعاء بعد', 'all_doa': 'كل الأدعية', 'bookmarked': 'المفضلة', 'Imsak': 'إمساك', 'Fajr': 'الفجر', 'Sunrise': 'الشروق', 'Dhuhr': 'الظهر', 'Asr': 'العصر', 'Maghrib': 'المغرب', 'Isha': 'العشاء', 'Imsak_desc': 'إشعار وبدون صوت أذان', 'Fajr_desc': 'مكة #1 (الفجر)', 'Sunrise_desc': 'إشعار وبدون صوت أذان', 'Dhuhr_desc': 'مشاري راشد', 'Asr_desc': 'مشاري راشد', 'Maghrib_desc': 'مشاري راشد', 'Isha_desc': 'مشاري راشد' },
-        'tr': { 'nav_title': 'Gezinme Menüsü', 'nav_doa': '🤲 Günlük Dualar', 'nav_quran': '📖 Kur\'an-ı Kerim', 'nav_dzikir': '📿 Zikir', 'nav_kiblat': '🧭 Kıble', 'nav_settings': '⚙️ Ayarlar', 'remaining_time': 'Kalan Süre', 'settings_title': 'Ayarlar', 'settings_dark_mode': 'Karanlık Mod', 'settings_language': 'Dil', 'settings_about': 'Uygulama Hakkında', 'last_read': 'SON OKUNAN', 'no_last_read': 'Henüz dua okunmadı', 'all_doa': 'Tüm Dualar', 'bookmarked': 'İşaretli', 'Imsak': 'İmsak', 'Fajr': 'Sabah', 'Sunrise': 'Güneş', 'Dhuhr': 'Öğle', 'Asr': 'İkindi', 'Maghrib': 'Akşam', 'Isha': 'Yatsı', 'Imsak_desc': 'Bildirim & Ezan Sesi Yok', 'Fajr_desc': 'Mekke #1 (Sabah)', 'Sunrise_desc': 'Bildirim & Ezan Sesi Yok', 'Dhuhr_desc': 'Mishary Rashid', 'Asr_desc': 'Mishary Rashid', 'Maghrib_desc': 'Mishary Rashid', 'Isha_desc': 'Mishary Rashid' },
-        'fr':{ 'nav_title': 'Menu de navigation', 'nav_doa': '🤲 Prières quotidiennes', 'nav_quran': '📖 Al-Qur\'an', 'nav_dzikir': '📿 Dhikr', 'nav_kiblat': '🧭 Qibla', 'nav_settings': '⚙️ Paramètres', 'remaining_time': 'Temps restant', 'settings_title': 'Paramètres', 'settings_dark_mode': 'Mode sombre', 'settings_language': 'Langue', 'settings_about': 'À propos de l\'application', 'last_read': 'DERNIÈRE LECTURE', 'no_last_read': 'Aucune prière n\'a été lue', 'all_doa': 'Toutes les prières', 'bookmarked': 'Marquées', 'Imsak': 'Imsak', 'Fajr': 'Fajr', 'Sunrise': 'Lever du soleil', 'Dhuhr': 'Dhuhr', 'Asr': 'Asr', 'Maghrib': 'Maghrib', 'Isha': 'Isha', 'Imsak_desc': 'Notification & Pas de son Adhan', 'Fajr_desc': 'Makkah #1 (Fajr)', 'Sunrise_desc': 'Notification & Pas de son Adhan', 'Dhuhr_desc': 'Mishary Rashid', 'Asr_desc': 'Mishary Rashid', 'Maghrib_desc': 'Mishary Rashid', 'Isha_desc': 'Mishary Rashid' },
-        'es':{ 'nav_title': 'Menú de Navegación', 'nav_doa': '🤲 Oraciones Diarias', 'nav_quran': '📖 Al-Corán', 'nav_dzikir': '📿 Dhikr', 'nav_kiblat': '🧭 Quibla', 'nav_settings': '⚙️ Ajustes', 'remaining_time': 'Tiempo Restante', 'settings_title': 'Ajustes', 'settings_dark_mode': 'Modo Oscuro', 'settings_language': 'Idioma', 'settings_about': 'Acerca de la Aplicación', 'last_read': 'ÚLTIMA LECTURA', 'no_last_read': 'No se han leído oraciones', 'all_doa': 'Todas las Oraciones', 'bookmarked': 'Marcadas', 'Imsak': 'Imsak', 'Fajr': 'Fajr', 'Sunrise': 'Amanecer', 'Dhuhr': 'Dhuhr', 'Asr': 'Asr', 'Maghrib': 'Maghrib', 'Isha': 'Isha', 'Imsak_desc': 'Notificación y sin sonido de Adhan', 'Fajr_desc': 'Makkah #1 (Fajr)', 'Sunrise_desc': 'Notificación y sin sonido de Adhan', 'Dhuhr_desc': 'Mishary Rashid', 'Asr_desc': 'Mishary Rashid', 'Maghrib_desc': 'Mishary Rashid', 'Isha_desc': 'Mishary Rashid' },
-        'de':{ 'nav_title': 'Navigationsmenü', 'nav_doa': '🤲 Tägliche Gebete', 'nav_quran': '📖 Al-Qur\'an', 'nav_dzikir': '📿 Dhikr', 'nav_kiblat': '🧭 Qibla', 'nav_settings': '⚙️ Einstellungen', 'remaining_time': 'Verbleibende Zeit', 'settings_title': 'Einstellungen', 'settings_dark_mode': 'Dunkelmodus', 'settings_language': 'Sprache', 'settings_about': 'Über die App', 'last_read': 'ZULETZT GELESEN', 'no_last_read': 'Noch keine Gebete gelesen', 'all_doa': 'Alle Gebete', 'bookmarked': 'Markiert', 'Imsak': 'Imsak', 'Fajr': 'Fajr', 'Sunrise': 'Sonnenaufgang', 'Dhuhr': 'Dhuhr', 'Asr': 'Asr', 'Maghrib': 'Maghrib', 'Isha': 'Isha', 'Imsak_desc': 'Benachrichtigung & kein Adhan-Ton', 'Fajr_desc': 'Mekka #1 (Fajr)', 'Sunrise_desc': 'Benachrichtigung & kein Adhan-Ton', 'Dhuhr_desc': 'Mishary Rashid', 'Asr_desc': 'Mishary Rashid', 'Maghrib_desc': 'Mishary Rashid', 'Isha_desc': 'Mishary Rashid' },
-        'ru':{ 'nav_title': 'Навигационное меню', 'nav_doa': '🤲 Ежедневные молитвы', 'nav_quran': '📖 Аль-Коран', 'nav_dzikir': '📿 Зикр', 'nav_kiblat': '🧭 Кибла', 'nav_settings': '⚙️ Настройки', 'remaining_time': 'Оставшееся время', 'settings_title': 'Настройки', 'settings_dark_mode': 'Темный режим', 'settings_language': 'Язык', 'settings_about': 'О приложении', 'last_read': 'ПОСЛЕДНЕЕ ПРОЧТЕНИЕ', 'no_last_read': 'Молитвы еще не читались', 'all_doa': 'Все молитвы', 'bookmarked': 'В закладках', 'Imsak': 'Имсак', 'Fajr': 'Фаджр', 'Sunrise': 'Восход', 'Dhuhr': 'Зухр', 'Asr': 'Аср', 'Maghrib': 'Магриб', 'Isha': 'Иша', 'Imsak_desc': 'Уведомление и без звука Азана', 'Fajr_desc': 'Мекка #1 (Фаджр)', 'Sunrise_desc': 'Уведомление и без звука Азана', 'Dhuhr_desc': 'Мишари Рашид', 'Asr_desc': 'Мишари Рашид', 'Maghrib_desc': 'Мишари Рашид', 'Isha_desc': 'Мишари Рашид' },
-        'ur':{ 'nav_title': 'نیویگیشن مینو', 'nav_doa': '🤲 روزانہ کی دعائیں', 'nav_quran': '📖 القرآن', 'nav_dzikir': '📿 ذکر', 'nav_kiblat': '🧭 قبلہ', 'nav_settings': '⚙️ ترتیبات', 'remaining_time': 'باقی وقت', 'settings_title': 'ترتیبات', 'settings_dark_mode': 'ڈارک موڈ', 'settings_language': 'زبان', 'settings_about': 'ایپ کے بارے میں', 'last_read': 'آخری بار پڑھا', 'no_last_read': 'کوئی دعا نہیں پڑھی گئی', 'all_doa': 'تمام دعائیں', 'bookmarked': 'نشان زدہ', 'Imsak': 'امساک', 'Fajr': 'فجر', 'Sunrise': 'طلوع آفتاب', 'Dhuhr': 'ظہر', 'Asr': 'عصر', 'Maghrib': 'مغرب', 'Isha': 'عشاء', 'Imsak_desc': 'اطلاع اور اذان کی آواز نہیں', 'Fajr_desc': 'مکہ #1 (فجر)', 'Sunrise_desc': 'اطلاع اور اذان کی آواز نہیں', 'Dhuhr_desc': 'مشاری راشد', 'Asr_desc': 'مشاری راشد', 'Maghrib_desc': 'مشاری راشد', 'Isha_desc': 'مشاری راشد' },
-        'bn':{ 'nav_title': 'নেভিগেশন মেনু', 'nav_doa': '🤲 দৈনিক দোয়া', 'nav_quran': '📖 আল-কুরআন', 'nav_dzikir': '📿 যিকির', 'nav_kiblat': '🧭 কিবলা', 'nav_settings': '⚙️ সেটিংস', 'remaining_time': 'বাকি সময়', 'settings_title': 'সেটিংস', 'settings_dark_mode': 'ডার্ক মোড', 'settings_language': 'ভাষা', 'settings_about': 'অ্যাপ সম্পর্কে', 'last_read': 'শেষ পঠিত', 'no_last_read': 'এখনও কোন দোয়া পড়া হয়নি', 'all_doa': 'সমস্ত দোয়া', 'bookmarked': 'বুকমার্ক করা', 'Imsak': 'ইمسাক', 'Fajr': 'ফজর', 'Sunrise': 'সূর্যোদয়', 'Dhuhr': 'যোহর', 'Asr': 'আসর', 'Maghrib': 'মাগরিব', 'Isha': 'ইশা', 'Imsak_desc': 'বিজ্ঞপ্তি এবং আযানের শব্দ নেই', 'Fajr_desc': 'মক্কা #1 (ফজর)', 'Sunrise_desc': 'বিজ্ঞপ্তি এবং আযানের শব্দ নেই', 'Dhuhr_desc': 'মিশারি রশিদ', 'Asr_desc': 'মিশারি রশিদ', 'Maghrib_desc': 'মিশারি রশিদ', 'Isha_desc': 'মিশারি রশিদ' },
-    };
-    
-    document.addEventListener('DOMContentLoaded', () => {
-        // --- GLOBAL VARIABLES & STATE ---
-        let currentLanguage = 'id';
-        let countdownInterval;
-        let bookmarkedDoas = JSON.parse(localStorage.getItem('bookmarked_doas')) || [];
-        let lastReadDoaId = localStorage.getItem('last_read_doa_id');
-        let currentOpenDoaId = null;
-        window.latestPrayerTimes = null;
-
-        let dzikirState = JSON.parse(localStorage.getItem('dzikir_state')) || {};
-        let currentDzikirId = null;
-
-        // --- ELEMENT SELECTORS ---
-        const sidebar = document.getElementById('sidebar');
-        const menuToggle = document.getElementById('menu-toggle');
-        const views = document.querySelectorAll('.main-view');
-        const prayerTimesBtn = document.getElementById('prayer-times-btn');
-        const doaHarianBtn = document.getElementById('doa-harian-btn');
-        const dzikirBtn = document.getElementById('dzikir-btn');
-        const settingsBtn = document.getElementById('settings-btn');
-        const doaListContainer = document.getElementById('doa-list-container-view');
-        const lastReadCard = document.getElementById('last-read-doa-card');
-        const lastReadCardText = lastReadCard.querySelector('p');
-        const singleDoaModal = document.getElementById('single-doa-modal');
-        const settingsModal = document.getElementById('settings-modal');
-
-        const dzikirListContainer = document.getElementById('dzikir-list-container');
-        const tasbihView = document.getElementById('tasbih-view');
-        const tasbihTitle = document.getElementById('tasbih-title');
-        const tasbihCurrentCount = document.getElementById('tasbih-current-count');
-        const tasbihTargetCount = document.getElementById('tasbih-target-count');
-        const tasbihTapArea = document.getElementById('tasbih-tap-area');
-        const tasbihResetBtn = document.getElementById('tasbih-reset-btn');
-
-        // --- CORE APP LOGIC ---
-
-        function showView(viewId) {
-            document.querySelectorAll('.main-view, .full-modal').forEach(v => {
-                if (v.id !== 'tasbih-view') v.style.display = 'none';
-            });
-            const isTasbih = viewId === 'tasbih-view';
-            const targetView = document.getElementById(viewId);
-            if (isTasbih) {
-                document.querySelector('.app-container').style.display = 'none';
-                tasbihView.style.display = 'flex';
-            } else {
-                document.querySelector('.app-container').style.display = 'block';
-                tasbihView.style.display = 'none';
-                if (targetView) targetView.style.display = 'block';
-            }
-            const prayerView = document.getElementById('prayer-times-view');
-            menuToggle.style.display = (prayerView && prayerView.style.display === 'block') ? 'flex' : 'none';
-        }
-
-        function closeSidebar() {
-            menuToggle.classList.remove('open');
-            sidebar.classList.remove('open');
-        }
-
-        function setupNavigation() {
-            prayerTimesBtn.addEventListener('click', (e) => { e.preventDefault(); showView('prayer-times-view'); closeSidebar(); });
-            doaHarianBtn.addEventListener('click', (e) => { e.preventDefault(); showView('doa-view'); renderDoaListView('all'); closeSidebar(); });
-            dzikirBtn.addEventListener('click', (e) => { e.preventDefault(); showView('dzikir-view'); renderDzikirList(); closeSidebar(); });
-            document.querySelectorAll('.back-button').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const targetViewId = btn.getAttribute('data-target-view');
-                    showView(targetViewId);
-                    if (targetViewId === 'dzikir-view') {
-                        renderDzikirList();
-                    }
-          _PERBAIKAN DIMULAI DI SINI_
-        // --- PRAYER TIMES FEATURE ---
-        const prayerUIData = { Imsak: { icon: '—', checkable: false }, Fajr: { icon: '—', checkable: true }, Sunrise: { icon: '—', checkable: false }, Dhuhr: { icon: '—', checkable: true }, Asr: { icon: '—', checkable: true }, Maghrib: { icon: '—', checkable: true }, Isha: { icon: '—', checkable: true } };
-
-        function adjustTimeByTwoMinutes(timeString) {
-            const [h, m] = timeString.split(':').map(Number);
-            const date = new Date();
-            date.setHours(h, m + 2, 0, 0); 
-            return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-        }
-
-        function generateCalendar() {
-            const calendarContainerEl = document.getElementById('calendar-view-container');
-            const dayNamesList = { id: ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"], en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], ar: ["أحد", "إثن", "ثلا", "أرب", "خمي", "جمع", "سبت"], tr: ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"], fr: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"], es: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"], de: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"], ru: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"], ur: ["اتوار", "پیر", "منگل", "بدھ", "جمعرات", "جمعہ", "ہفتہ"], bn: ["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহ", "শুক্র", "শনি"] };
-            const today = new Date();
-            const todayDayIndex = today.getDay();
-            let calendarHtml = '';
-            for (let i = 0; i < 7; i++) {
-                const date = new Date();
-                date.setDate(today.getDate() - (todayDayIndex - i));
-                const isToday = i === todayDayIndex;
-                calendarHtml += `<div class="day ${isToday ? 'today' : ''}"><span class="day-name">${dayNamesList[currentLanguage][i] || dayNamesList['id'][i]}</span><span class="day-number">${date.getDate()}</span></div>`;
-            }
-            if (calendarContainerEl) calendarContainerEl.innerHTML = calendarHtml;
-        }
-
-        function renderPrayerTimes(prayerTimes) {
-            const prayerListContainerEl = document.getElementById('prayer-list-container');
-            if (!prayerListContainerEl) return;
-            prayerListContainerEl.innerHTML = '';
-            let prayerHtml = '';
-            const prayerOrder = ['Imsak', 'Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-            const now = new Date();
-            const isAfterResetTime = now.getHours() >= 22;
-            prayerOrder.forEach(key => {
-                if (prayerTimes[key]) {
-                    const ui = prayerUIData[key];
-                    const prayerDate = new Date(`${now.toDateString()} ${prayerTimes[key]}`);
-                    let iconToShow = ui.icon;
-                    if (ui.checkable) {
-                        if (isAfterResetTime) iconToShow = '—';
-                        else if (now > prayerDate) iconToShow = '✔';
-                    }
-                    prayerHtml += `<div class="prayer-item"><span class="icon-status">${iconToShow}</span><div class="prayer-details"><div class="prayer-name">${translations[currentLanguage][key] || key}</div><div class="prayer-desc">${translations[currentLanguage][`${key}_desc`] || key}</div></div><div class="prayer-time-action"><div class="prayer-time">${prayerTimes[key]}</div><div class="prayer-action">🔊</div></div></div>`;
-                }
-            });
-            prayerListContainerEl.innerHTML = prayerHtml;
-        }
-
-        function startCountdown(prayerTimes) {
-            if (countdownInterval) clearInterval(countdownInterval);
-            
-            const prayerOrder = ['Imsak', 'Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-            
-            function update() {
-                const now = new Date();
-                let nextPrayerTime, nextPrayerName;
-
-                for (const name of prayerOrder) {
-                    const prayerDate = new Date(`${now.toDateString()} ${prayerTimes[name]}`);
-                    if (prayerDate > now) {
-                        nextPrayerTime = prayerDate;
-                        nextPrayerName = name;
-                        break;
-                    }
-                }
-
-                if (!nextPrayerTime) {
-                    const tomorrow = new Date(now);
-                    tomorrow.setDate(now.getDate() + 1);
-                    nextPrayerTime = new Date(`${tomorrow.toDateString()} ${prayerTimes['Imsak']}`);
-                    nextPrayerName = 'Imsak';
-                }
-
-                const diff = nextPrayerTime - now;
-                if (diff < 0) return;
-
-                const h = String(Math.floor(diff / 3600000)).padStart(2, '0');
-                const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
-                const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
-                
-                document.getElementById('countdown-timer').textContent = `${h}:${m}:${s}`;
-                document.getElementById('next-prayer-name').textContent = translations[currentLanguage][nextPrayerName] || nextPrayerName;
-            }
-
-            update();
-            countdownInterval = setInterval(update, 1000);
-        }
-
-        function updateDates() {
-            const hijriMonths = ["Muharram", "Safar", "Rabiul Awal", "Rabiul Akhir", "Jumadil Awal", "Jumadil Akhir", "Rajab", "Syaban", "Ramadhan", "Syawal", "Zulkaidah", "Zulhijah"];
-            const now = new Date();
-            const localeMap = { id: 'id-ID', en: 'en-US', ar: 'ar-SA', tr: 'tr-TR', fr: 'fr-FR', es: 'es-ES', de: 'de-DE', ru: 'ru-RU', ur: 'ur-PK', bn: 'bn-BD' };
-            const locale = localeMap[currentLanguage] || 'en-US';
-            document.getElementById('gregorian-date-display').textContent = now.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-            const hijriFmt = new Intl.DateTimeFormat('en-TN-u-ca-islamic', { day: 'numeric', month: 'numeric', year: 'numeric' });
-            const parts = hijriFmt.formatToParts(now);
-            const d = parts.find(p => p.type === 'day').value;
-            const m = parseInt(parts.find(p => p.type === 'month').value);
-            const y = parts.find(p => p.type === 'year').value.split(' ')[0];
-            document.getElementById('hijri-date-display').textContent = `${d} ${hijriMonths[m-1]} ${y} H`;
-        }
-
-        function fetchCityName(lat, lon) {
-            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`).then(r => r.json()).then(data => {
-                document.getElementById('city-name').textContent = data.address.city || data.address.town || data.address.village || "Lokasi tidak dikenal";
-            }).catch(console.error);
-        }
-
-        function fetchPrayerTimings(lat, lon) {
-            const ts = Math.floor(Date.now() / 1000);
-            fetch(`https://api.aladhan.com/v1/timings/${ts}?latitude=${lat}&longitude=${lon}&method=11`).then(r => r.json()).then(j => {
-                if (j.code === 200) {
-                    const originalTimings = j.data.timings;
-                    const adjustedTimings = {};
-
-                    for (const key in originalTimings) {
-                        adjustedTimings[key] = adjustTimeByTwoMinutes(originalTimings[key]);
-                    }
-                    
-                    window.latestPrayerTimes = adjustedTimings;
-                    renderPrayerTimes(adjustedTimings);
-                    startCountdown(adjustedTimings);
-                }
-            }).catch(console.error);
-        }
-
-        function getLocation() {
-            const fallbackLat = 3.5952, fallbackLon = 98.6722; // Medan
-
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    // --- Bagian Sukses ---
-                    (position) => {
-                        fetchPrayerTimings(position.coords.latitude, position.coords.longitude);
-                        fetchCityName(position.coords.latitude, position.coords.longitude);
-                    },
-                    // --- Bagian Error (Yang Diperbaiki) ---
-                    (error) => {
-                        fetchPrayerTimings(fallbackLat, fallbackLon);
-                        fetchCityName(fallbackLat, fallbackLon);
-                        
-                        let alertMessage = "";
-                        switch(error.code) {
-                            case error.PERMISSION_DENIED:
-                                alertMessage = "Izin lokasi ditolak oleh pengguna. Menampilkan jadwal & lokasi untuk Medan.";
-                                break;
-                            case error.POSITION_UNAVAILABLE:
-                                alertMessage = "Informasi lokasi tidak tersedia saat ini. Menampilkan jadwal & lokasi untuk Medan.";
-                                break;
-                            case error.TIMEOUT:
-                                alertMessage = "Waktu permintaan lokasi habis. Menampilkan jadwal & lokasi untuk Medan.";
-                                break;
-                            case error.UNKNOWN_ERROR:
-                                alertMessage = "Terjadi kesalahan yang tidak diketahui saat mengambil lokasi. Menampilkan jadwal & lokasi untuk Medan.";
-                                break;
-                        }
-                        if (alertMessage) {
-                            alert(alertMessage);
-                        }
-                    }
-                );
-            } else {
-                fetchPrayerTimings(fallbackLat, fallbackLon);
-                fetchCityName(fallbackLat, fallbackLon);
-                alert("Browser tidak mendukung lokasi. Menampilkan jadwal & lokasi untuk Medan.");
-            }
-        }
-        // _PERBAIKAN SELESAI DI SINI_
-
-        // --- DOA HARIAN FEATURE ---
-        function setupDoaHarian() {
-            function renderDoaListView(filter) {
-                doaListContainer.innerHTML = '';
-                let filteredData = (filter === 'bookmarked') ? doaHarianData.filter(doa => bookmarkedDoas.includes(doa.id)) : doaHarianData;
-                if (filteredData.length === 0) {
-                    doaListContainer.innerHTML = `<p style="text-align:center; margin-top: 2rem; color: var(--text-light);">Belum ada doa yang ditandai.</p>`;
-                    return;
-                }
-                filteredData.forEach(doa => {
-                    const item = document.createElement('div');
-                    item.className = 'doa-list-item';
-                    item.innerHTML = `<span class="num">${doa.id}</span><div class="details"><div class="title">${doa.title}</div><div class="subtitle">${doa.subtitle}</div></div><span class="arabic">${doa.arabic.split(' ')[0]}...</span>`;
-                    item.addEventListener('click', () => showSingleDoa(doa.id));
-                    doaListContainer.appendChild(item);
-                });
-            }
-            function showSingleDoa(doaId) {
-                const doa = doaHarianData.find(d => d.id === doaId);
-                if (!doa) return;
-                currentOpenDoaId = doa.id;
-                singleDoaModal.querySelector('#single-doa-modal-title').textContent = doa.title;
-                singleDoaModal.querySelector('#single-doa-modal-body').innerHTML = `<p class="single-doa-arabic">${doa.arabic}</p><p class="single-doa-arti"><b>Artinya:</b> ${doa.arti}</p>`;
-                updateBookmarkIcon();
-                singleDoaModal.style.display = 'flex';
-                localStorage.setItem('last_read_doa_id', doa.id);
-                lastReadDoaId = doa.id;
-                renderLastRead();
-            }
-            function renderLastRead() {
-                if (lastReadDoaId) {
-                    const doa = doaHarianData.find(d => d.id == lastReadDoaId);
-                    lastReadCardText.textContent = doa ? doa.title : (translations[currentLanguage].no_last_read || 'No prayers have been read yet');
-                } else {
-                    lastReadCardText.textContent = translations[currentLanguage].no_last_read || 'No prayers have been read yet';
-                }
-            }
-            lastReadCard.addEventListener('click', () => { if (lastReadDoaId) showSingleDoa(parseInt(lastReadDoaId)); });
-            function updateBookmarkIcon() { singleDoaModal.querySelector('#bookmark-doa-btn').classList.toggle('bookmarked', bookmarkedDoas.includes(currentOpenDoaId)); }
-            singleDoaModal.querySelector('#bookmark-doa-btn').addEventListener('click', () => {
-                const index = bookmarkedDoas.indexOf(currentOpenDoaId);
-                if (index > -1) bookmarkedDoas.splice(index, 1);
-                else bookmarkedDoas.push(currentOpenDoaId);
-                localStorage.setItem('bookmarked_doas', JSON.stringify(bookmarkedDoas));
-                updateBookmarkIcon();
-                if (document.querySelector('.tab-item.active').dataset.tab === 'bookmarked') renderDoaListView('bookmarked');
-            });
-            document.querySelectorAll('.tab-item').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    document.querySelector('.tab-item.active').classList.remove('active');
-                    tab.classList.add('active');
-                    renderDoaListView(tab.dataset.tab);
-                });
-            });
-            singleDoaModal.querySelector('.close-button').addEventListener('click', () => singleDoaModal.style.display = 'none');
-        }
-
-        // --- DZIKIR & TASBIH FEATURE ---
-        function saveDzikirState() {
-            localStorage.setItem('dzikir_state', JSON.stringify(dzikirState));
-        }
-
-        function renderDzikirList() {
-            dzikirListContainer.innerHTML = '';
-            dzikirData.forEach(dzikir => {
-                const state = dzikirState[dzikir.id] || { count: 0, lap: 0, lastUpdate: 'Belum pernah' };
-                const item = document.createElement('div');
-                item.className = 'dzikir-item';
-                item.innerHTML = `
-                    <div class="dzikir-item-info">
-                        <span class="title">${dzikir.title}</span>
-                        <span class="timestamp">${state.lastUpdate}</span>
-                    </div>
-                    <div class="dzikir-item-progress">
-                        <span class="count">${state.count}/${dzikir.target}</span>
-                        <span class="lap">${state.lap} Putaran</span>
-                    </div>`;
-                item.addEventListener('click', () => showTasbihView(dzikir.id));
-                dzikirListContainer.appendChild(item);
-            });
-        }
-
-        function showTasbihView(id) {
-            currentDzikirId = id;
-            const dzikir = dzikirData.find(d => d.id === id);
-            const state = dzikirState[id] || { count: 0, lap: 0 };
-            tasbihTitle.textContent = dzikir.title;
-            tasbihCurrentCount.textContent = state.count;
-            tasbihTargetCount.textContent = `/ ${dzikir.target}`;
-            showView('tasbih-view');
-        }
-
-        function setupDzikir() {
-            tasbihTapArea.addEventListener('click', () => {
-          _PERBAIKAN DIMULAI DI SINI_
-        // --- PRAYER TIMES FEATURE ---
-        const prayerUIData = { Imsak: { icon: '—', checkable: false }, Fajr: { icon: '—', checkable: true }, Sunrise: { icon: '—', checkable: false }, Dhuhr: { icon: '—', checkable: true }, Asr: { icon: '—', checkable: true }, Maghrib: { icon: '—', checkable: true }, Isha: { icon: '—', checkable: true } };
-
-        function adjustTimeByTwoMinutes(timeString) {
-            const [h, m] = timeString.split(':').map(Number);
-            const date = new Date();
-            date.setHours(h, m + 2, 0, 0); 
-            return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-        }
-
-        function generateCalendar() {
-            const calendarContainerEl = document.getElementById('calendar-view-container');
-            const dayNamesList = { id: ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"], en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], ar: ["أحد", "إثن", "ثلا", "أرب", "خمي", "جمع", "سبت"], tr: ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"], fr: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"], es: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"], de: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"], ru: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"], ur: ["اتوار", "پیر", "منگل", "بدھ", "جمعرات", "جمعہ", "ہفتہ"], bn: ["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহ", "শুক্র", "শনি"] };
-            const today = new Date();
-            const todayDayIndex = today.getDay();
-            let calendarHtml = '';
-            for (let i = 0; i < 7; i++) {
-                const date = new Date();
-                date.setDate(today.getDate() - (todayDayIndex - i));
-                const isToday = i === todayDayIndex;
-                calendarHtml += `<div class="day ${isToday ? 'today' : ''}"><span class="day-name">${dayNamesList[currentLanguage][i] || dayNamesList['id'][i]}</span><span class="day-number">${date.getDate()}</span></div>`;
-            }
-            if (calendarContainerEl) calendarContainerEl.innerHTML = calendarHtml;
-        }
-
-        function renderPrayerTimes(prayerTimes) {
-            const prayerListContainerEl = document.getElementById('prayer-list-container');
-            if (!prayerListContainerEl) return;
-            prayerListContainerEl.innerHTML = '';
-            let prayerHtml = '';
-            const prayerOrder = ['Imsak', 'Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-            const now = new Date();
-            const isAfterResetTime = now.getHours() >= 22;
-            prayerOrder.forEach(key => {
-                if (prayerTimes[key]) {
-                    const ui = prayerUIData[key];
-                    const prayerDate = new Date(`${now.toDateString()} ${prayerTimes[key]}`);
-                    let iconToShow = ui.icon;
-                    if (ui.checkable) {
-                        if (isAfterResetTime) iconToShow = '—';
-                        else if (now > prayerDate) iconToShow = '✔';
-                    }
-                    prayerHtml += `<div class="prayer-item"><span class="icon-status">${iconToShow}</span><div class="prayer-details"><div class="prayer-name">${translations[currentLanguage][key] || key}</div><div class="prayer-desc">${translations[currentLanguage][`${key}_desc`] || key}</div></div><div class="prayer-time-action"><div class="prayer-time">${prayerTimes[key]}</div><div class="prayer-action">🔊</div></div></div>`;
-                }
-            });
-            prayerListContainerEl.innerHTML = prayerHtml;
-        }
-
-        function startCountdown(prayerTimes) {
-            if (countdownInterval) clearInterval(countdownInterval);
-            
-            const prayerOrder = ['Imsak', 'Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-            
-            function update() {
-                const now = new Date();
-                let nextPrayerTime, nextPrayerName;
-
-                for (const name of prayerOrder) {
-                    const prayerDate = new Date(`${now.toDateString()} ${prayerTimes[name]}`);
-                    if (prayerDate > now) {
-                        nextPrayerTime = prayerDate;
-                        nextPrayerName = name;
-                        break;
-                    }
-                }
-
-                if (!nextPrayerTime) {
-                    const tomorrow = new Date(now);
-                    tomorrow.setDate(now.getDate() + 1);
-                    nextPrayerTime = new Date(`${tomorrow.toDateString()} ${prayerTimes['Imsak']}`);
-                    nextPrayerName = 'Imsak';
-                }
-
-                const diff = nextPrayerTime - now;
-                if (diff < 0) return;
-
-                const h = String(Math.floor(diff / 3600000)).padStart(2, '0');
-                const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
-                const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
-                
-                document.getElementById('countdown-timer').textContent = `${h}:${m}:${s}`;
-                document.getElementById('next-prayer-name').textContent = translations[currentLanguage][nextPrayerName] || nextPrayerName;
-            }
-
-            update();
-            countdownInterval = setInterval(update, 1000);
-        }
-
-        function updateDates() {
-            const hijriMonths = ["Muharram", "Safar", "Rabiul Awal", "Rabiul Akhir", "Jumadil Awal", "Jumadil Akhir", "Rajab", "Syaban", "Ramadhan", "Syawal", "Zulkaidah", "Zulhijah"];
-            const now = new Date();
-            const localeMap = { id: 'id-ID', en: 'en-US', ar: 'ar-SA', tr: 'tr-TR', fr: 'fr-FR', es: 'es-ES', de: 'de-DE', ru: 'ru-RU', ur: 'ur-PK', bn: 'bn-BD' };
-            const locale = localeMap[currentLanguage] || 'en-US';
-            document.getElementById('gregorian-date-display').textContent = now.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-            const hijriFmt = new Intl.DateTimeFormat('en-TN-u-ca-islamic', { day: 'numeric', month: 'numeric', year: 'numeric' });
-            const parts = hijriFmt.formatToParts(now);
-            const d = parts.find(p => p.type === 'day').value;
-            const m = parseInt(parts.find(p => p.type === 'month').value);
-            const y = parts.find(p => p.type === 'year').value.split(' ')[0];
-            document.getElementById('hijri-date-display').textContent = `${d} ${hijriMonths[m-1]} ${y} H`;
-        }
-
-        function fetchCityName(lat, lon) {
-            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`).then(r => r.json()).then(data => {
-                document.getElementById('city-name').textContent = data.address.city || data.address.town || data.address.village || "Lokasi tidak dikenal";
-            }).catch(console.error);
-        }
-
-        function fetchPrayerTimings(lat, lon) {
-            const ts = Math.floor(Date.now() / 1000);
-            fetch(`https://api.aladhan.com/v1/timings/${ts}?latitude=${lat}&longitude=${lon}&method=11`).then(r => r.json()).then(j => {
-                if (j.code === 200) {
-                    const originalTimings = j.data.timings;
-                    const adjustedTimings = {};
-
-                    for (const key in originalTimings) {
-                        adjustedTimings[key] = adjustTimeByTwoMinutes(originalTimings[key]);
-                    }
-                    
-                    window.latestPrayerTimes = adjustedTimings;
-                    renderPrayerTimes(adjustedTimings);
-                    startCountdown(adjustedTimings);
-                }
-            }).catch(console.error);
-        }
-
-        function getLocation() {
-            const fallbackLat = 3.5952, fallbackLon = 98.6722; // Medan
-
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    // --- Bagian Sukses ---
-                    (position) => {
-                        fetchPrayerTimings(position.coords.latitude, position.coords.longitude);
-                        fetchCityName(position.coords.latitude, position.coords.longitude);
-                    },
-                    // --- Bagian Error (Yang Diperbaiki) ---
-                    (error) => {
-                        fetchPrayerTimings(fallbackLat, fallbackLon);
-                        fetchCityName(fallbackLat, fallbackLon);
-                        
-                        let alertMessage = "";
-                        switch(error.code) {
-                            case error.PERMISSION_DENIED:
-                                alertMessage = "Izin lokasi ditolak oleh pengguna. Menampilkan jadwal & lokasi untuk Medan.";
-                                break;
-                            case error.POSITION_UNAVAILABLE:
-                                alertMessage = "Informasi lokasi tidak tersedia saat ini. Menampilkan jadwal & lokasi untuk Medan.";
-                                break;
-                            case error.TIMEOUT:
-                                alertMessage = "Waktu permintaan lokasi habis. Menampilkan jadwal & lokasi untuk Medan.";
-                                break;
-                            case error.UNKNOWN_ERROR:
-                                alertMessage = "Terjadi kesalahan yang tidak diketahui saat mengambil lokasi. Menampilkan jadwal & lokasi untuk Medan.";
-                                break;
-                        }
-                        if (alertMessage) {
-                            alert(alertMessage);
-                        }
-                    }
-                );
-            } else {
-                fetchPrayerTimings(fallbackLat, fallbackLon);
-                fetchCityName(fallbackLat, fallbackLon);
-                alert("Browser tidak mendukung lokasi. Menampilkan jadwal & lokasi untuk Medan.");
-            }
-        }
-
-        // --- DOA HARIAN FEATURE ---
-        function setupDoaHarian() {
-            function renderDoaListView(filter) {
-                doaListContainer.innerHTML = '';
-                let filteredData = (filter === 'bookmarked') ? doaHarianData.filter(doa => bookmarkedDoas.includes(doa.id)) : doaHarianData;
-                if (filteredData.length === 0) {
-                    doaListContainer.innerHTML = `<p style="text-align:center; margin-top: 2rem; color: var(--text-light);">Belum ada doa yang ditandai.</p>`;
-                    return;
-                }
-                filteredData.forEach(doa => {
-                    const item = document.createElement('div');
-                    item.className = 'doa-list-item';
-                    item.innerHTML = `<span class="num">${doa.id}</span><div class="details"><div class="title">${doa.title}</div><div class="subtitle">${doa.subtitle}</div></div><span class="arabic">${doa.arabic.split(' ')[0]}...</span>`;
-                    item.addEventListener('click', () => showSingleDoa(doa.id));
-                    doaListContainer.appendChild(item);
-                });
-            }
-            function showSingleDoa(doaId) {
-                const doa = doaHarianData.find(d => d.id === doaId);
-                if (!doa) return;
-                currentOpenDoaId = doa.id;
-                singleDoaModal.querySelector('#single-doa-modal-title').textContent = doa.title;
-                singleDoaModal.querySelector('#single-doa-modal-body').innerHTML = `<p class="single-doa-arabic">${doa.arabic}</p><p class="single-doa-arti"><b>Artinya:</b> ${doa.arti}</p>`;
-                updateBookmarkIcon();
-                singleDoaModal.style.display = 'flex';
-                localStorage.setItem('last_read_doa_id', doa.id);
-                lastReadDoaId = doa.id;
-                renderLastRead();
-            }
-            function renderLastRead() {
-                if (lastReadDoaId) {
-                    const doa = doaHarianData.find(d => d.id == lastReadDoaId);
-                    lastReadCardText.textContent = doa ? doa.title : (translations[currentLanguage].no_last_read || 'No prayers have been read yet');
-                } else {
-                    lastReadCardText.textContent = translations[currentLanguage].no_last_read || 'No prayers have been read yet';
-                }
-            }
-            lastReadCard.addEventListener('click', () => { if (lastReadDoaId) showSingleDoa(parseInt(lastReadDoaId)); });
-            function updateBookmarkIcon() { singleDoaModal.querySelector('#bookmark-doa-btn').classList.toggle('bookmarked', bookmarkedDoas.includes(currentOpenDoaId)); }
-            singleDoaModal.querySelector('#bookmark-doa-btn').addEventListener('click', () => {
-                const index = bookmarkedDoas.indexOf(currentOpenDoaId);
-                if (index > -1) bookmarkedDoas.splice(index, 1);
-                else bookmarkedDoas.push(currentOpenDoaId);
-                localStorage.setItem('bookmarked_doas', JSON.stringify(bookmarkedDoas));
-                updateBookmarkIcon();
-                if (document.querySelector('.tab-item.active').dataset.tab === 'bookmarked') renderDoaListView('bookmarked');
-            });
-            document.querySelectorAll('.tab-item').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    document.querySelector('.tab-item.active').classList.remove('active');
-                    tab.classList.add('active');
-                    renderDoaListView(tab.dataset.tab);
-                });
-            });
-            singleDoaModal.querySelector('.close-button').addEventListener('click', () => singleDoaModal.style.display = 'none');
-        }
-
-        // --- DZIKIR & TASBIH FEATURE ---
-        function saveDzikirState() {
-            localStorage.setItem('dzikir_state', JSON.stringify(dzikirState));
-        }
-
-        function renderDzikirList() {
-            dzikirListContainer.innerHTML = '';
-            dzikirData.forEach(dzikir => {
-                const state = dzikirState[dzikir.id] || { count: 0, lap: 0, lastUpdate: 'Belum pernah' };
-                const item = document.createElement('div');
-                item.className = 'dzikir-item';
-                item.innerHTML = `
-                    <div class="dzikir-item-info">
-                        <span class="title">${dzikir.title}</span>
-                        <span class="timestamp">${state.lastUpdate}</span>
-                    </div>
-                    <div class="dzikir-item-progress">
-                        <span class="count">${state.count}/${dzikir.target}</span>
-                        <span class="lap">${state.lap} Putaran</span>
-                    </div>`;
-                item.addEventListener('click', () => showTasbihView(dzikir.id));
-                dzikirListContainer.appendChild(item);
-            });
-        }
-
-        function showTasbihView(id) {
-            currentDzikirId = id;
-            const dzikir = dzikirData.find(d => d.id === id);
-            const state = dzikirState[id] || { count: 0, lap: 0 };
-            tasbihTitle.textContent = dzikir.title;
-            tasbihCurrentCount.textContent = state.count;
-            tasbihTargetCount.textContent = `/ ${dzikir.target}`;
-            showView('tasbih-view');
-        }
-
-        function setupDzikir() {
-            tasbihTapArea.addEventListener('click', () => {
-                if (!currentDzikirId) return;
-                const dzikir = dzikirData.find(d => d.id === currentDzikirId);
-                let state = dzikirState[currentDzikirId];
-                if (!state) {
-                    state = { count: 0, lap: 0 };
-                    dzikirState[currentDzikirId] = state;
-                }
-                state.count++;
-                if (state.count > dzikir.target) {
-                    state.count = 1;
-                    state.lap++;
-                }
-                state.lastUpdate = new Date().toLocaleString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-                tasbihCurrentCount.textContent = state.count;
-                saveDzikirState();
-                if (navigator.vibrate) {
-                    navigator.vibrate(50);
-                }
-            });
-            tasbihResetBtn.addEventListener('click', () => {
-                if (!currentDzikirId) return;
-                dzikirState[currentDzikirId].count = 0;
-                dzikirState[currentDzikirId].lap = 0;
-                tasbihCurrentCount.textContent = 0;
-                saveDzikirState();
-            });
-        }
-        
-        // --- NOTIFICATION FEATURE ---
-        function setupNotifications() {
-            if (!("Notification" in window)) {
-                console.log("Browser ini tidak mendukung notifikasi desktop");
-            } else if (Notification.permission === "granted") {
-                console.log("Izin notifikasi sudah diberikan.");
-            } else if (Notification.permission !== "denied") {
-                Notification.requestPermission().then(function (permission) {
-                    if (permission === "granted") {
-                        console.log("Izin notifikasi diberikan.");
-                        new Notification("Terima kasih! Notifikasi telah diaktifkan.");
-                    }
-                });
-            }
-        }
-
-        // --- SETTINGS & LANGUAGE ---
-        function setLanguage(lang) {
-            currentLanguage = lang;
-            document.querySelectorAll('[data-key]').forEach(el => {
-                if (translations[lang] && translations[lang][el.dataset.key]) {
-                    el.textContent = translations[lang][el.dataset.key];
-                }
-            });
-            updateDates();
-            generateCalendar();
-            if (window.latestPrayerTimes) {
-                renderPrayerTimes(window.latestPrayerTimes);
-                startCountdown(window.latestPrayerTimes);
-      _PERBAIKAN DIMULAI DI SINI_
-        // --- PRAYER TIMES FEATURE ---
-        const prayerUIData = { Imsak: { icon: '—', checkable: false }, Fajr: { icon: '—', checkable: true }, Sunrise: { icon: '—', checkable: false }, Dhuhr: { icon: '—', checkable: true }, Asr: { icon: '—', checkable: true }, Maghrib: { icon: '—', checkable: true }, Isha: { icon: '—', checkable: true } };
-
-        function adjustTimeByTwoMinutes(timeString) {
-            const [h, m] = timeString.split(':').map(Number);
-            const date = new Date();
-            date.setHours(h, m + 2, 0, 0); 
-            return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-        }
-
-        function generateCalendar() {
-            const calendarContainerEl = document.getElementById('calendar-view-container');
-            const dayNamesList = { id: ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"], en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], ar: ["أحد", "إثن", "ثلا", "أرب", "خمي", "جمع", "سبت"], tr: ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"], fr: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"], es: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"], de: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"], ru: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"], ur: ["اتوار", "پیر", "منگل", "بدھ", "جمعرات", "جمعہ", "ہفتہ"], bn: ["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহ", "শুক্র", "শনি"] };
-            const today = new Date();
-            const todayDayIndex = today.getDay();
-            let calendarHtml = '';
-            for (let i = 0; i < 7; i++) {
-                const date = new Date();
-                date.setDate(today.getDate() - (todayDayIndex - i));
-                const isToday = i === todayDayIndex;
-                calendarHtml += `<div class="day ${isToday ? 'today' : ''}"><span class="day-name">${dayNamesList[currentLanguage][i] || dayNamesList['id'][i]}</span><span class="day-number">${date.getDate()}</span></div>`;
-            }
-            if (calendarContainerEl) calendarContainerEl.innerHTML = calendarHtml;
-        }
-
-        function renderPrayerTimes(prayerTimes) {
-            const prayerListContainerEl = document.getElementById('prayer-list-container');
-            if (!prayerListContainerEl) return;
-            prayerListContainerEl.innerHTML = '';
-            let prayerHtml = '';
-            const prayerOrder = ['Imsak', 'Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-            const now = new Date();
-            const isAfterResetTime = now.getHours() >= 22;
-            prayerOrder.forEach(key => {
-                if (prayerTimes[key]) {
-                    const ui = prayerUIData[key];
-                    const prayerDate = new Date(`${now.toDateString()} ${prayerTimes[key]}`);
-                    let iconToShow = ui.icon;
-                    if (ui.checkable) {
-                        if (isAfterResetTime) iconToShow = '—';
-                        else if (now > prayerDate) iconToShow = '✔';
-                    }
-                    prayerHtml += `<div class="prayer-item"><span class="icon-status">${iconToShow}</span><div class="prayer-details"><div class="prayer-name">${translations[currentLanguage][key] || key}</div><div class="prayer-desc">${translations[currentLanguage][`${key}_desc`] || key}</div></div><div class="prayer-time-action"><div class="prayer-time">${prayerTimes[key]}</div><div class="prayer-action">🔊</div></div></div>`;
-                }
-            });
-            prayerListContainerEl.innerHTML = prayerHtml;
-        }
-
-        function startCountdown(prayerTimes) {
-            if (countdownInterval) clearInterval(countdownInterval);
-            
-            const prayerOrder = ['Imsak', 'Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-            
-            function update() {
-                const now = new Date();
-                let nextPrayerTime, nextPrayerName;
-
-                for (const name of prayerOrder) {
-                    const prayerDate = new Date(`${now.toDateString()} ${prayerTimes[name]}`);
-                    if (prayerDate > now) {
-                        nextPrayerTime = prayerDate;
-                        nextPrayerName = name;
-                        break;
-                    }
-                }
-
-                if (!nextPrayerTime) {
-                    const tomorrow = new Date(now);
-                    tomorrow.setDate(now.getDate() + 1);
-                    nextPrayerTime = new Date(`${tomorrow.toDateString()} ${prayerTimes['Imsak']}`);
-                    nextPrayerName = 'Imsak';
-                }
-
-                const diff = nextPrayerTime - now;
-                if (diff < 0) return;
-
-                const h = String(Math.floor(diff / 3600000)).padStart(2, '0');
-                const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
-                const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
-                
-                document.getElementById('countdown-timer').textContent = `${h}:${m}:${s}`;
-                document.getElementById('next-prayer-name').textContent = translations[currentLanguage][nextPrayerName] || nextPrayerName;
-            }
-
-            update();
-            countdownInterval = setInterval(update, 1000);
-        }
-
-        function updateDates() {
-            const hijriMonths = ["Muharram", "Safar", "Rabiul Awal", "Rabiul Akhir", "Jumadil Awal", "Jumadil Akhir", "Rajab", "Syaban", "Ramadhan", "Syawal", "Zulkaidah", "Zulhijah"];
-            const now = new Date();
-            const localeMap = { id: 'id-ID', en: 'en-US', ar: 'ar-SA', tr: 'tr-TR', fr: 'fr-FR', es: 'es-ES', de: 'de-DE', ru: 'ru-RU', ur: 'ur-PK', bn: 'bn-BD' };
-            const locale = localeMap[currentLanguage] || 'en-US';
-            document.getElementById('gregorian-date-display').textContent = now.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-            const hijriFmt = new Intl.DateTimeFormat('en-TN-u-ca-islamic', { day: 'numeric', month: 'numeric', year: 'numeric' });
-            const parts = hijriFmt.formatToParts(now);
-            const d = parts.find(p => p.type === 'day').value;
-            const m = parseInt(parts.find(p => p.type === 'month').value);
-            const y = parts.find(p => p.type === 'year').value.split(' ')[0];
-            document.getElementById('hijri-date-display').textContent = `${d} ${hijriMonths[m-1]} ${y} H`;
-        }
-
-        function fetchCityName(lat, lon) {
-            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`).then(r => r.json()).then(data => {
-                document.getElementById('city-name').textContent = data.address.city || data.address.town || data.address.village || "Lokasi tidak dikenal";
-            }).catch(console.error);
-        }
-
-        function fetchPrayerTimings(lat, lon) {
-            const ts = Math.floor(Date.now() / 1000);
-            fetch(`https://api.aladhan.com/v1/timings/${ts}?latitude=${lat}&longitude=${lon}&method=11`).then(r => r.json()).then(j => {
-                if (j.code === 200) {
-                    const originalTimings = j.data.timings;
-                    const adjustedTimings = {};
-
-                    for (const key in originalTimings) {
-                        adjustedTimings[key] = adjustTimeByTwoMinutes(originalTimings[key]);
-                    }
-                    
-                    window.latestPrayerTimes = adjustedTimings;
-                    renderPrayerTimes(adjustedTimings);
-                    startCountdown(adjustedTimings);
-                }
-            }).catch(console.error);
-        }
-
-        function getLocation() {
-            const fallbackLat = 3.5952, fallbackLon = 98.6722; // Medan
-
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    // --- Bagian Sukses ---
-                    (position) => {
-                        fetchPrayerTimings(position.coords.latitude, position.coords.longitude);
-                        fetchCityName(position.coords.latitude, position.coords.longitude);
-                    },
-                    // --- Bagian Error (Yang Diperbaiki) ---
-                    (error) => {
-                        fetchPrayerTimings(fallbackLat, fallbackLon);
-                        fetchCityName(fallbackLat, fallbackLon);
-                        
-                        let alertMessage = "";
-                        switch(error.code) {
-                            case error.PERMISSION_DENIED:
-                                alertMessage = "Izin lokasi ditolak oleh pengguna. Menampilkan jadwal & lokasi untuk Medan.";
-                                break;
-                            case error.POSITION_UNAVAILABLE:
-                                alertMessage = "Informasi lokasi tidak tersedia saat ini. Menampilkan jadwal & lokasi untuk Medan.";
-                                break;
-                            case error.TIMEOUT:
-                                alertMessage = "Waktu permintaan lokasi habis. Menampilkan jadwal & lokasi untuk Medan.";
-                                break;
-                            case error.UNKNOWN_ERROR:
-                                alertMessage = "Terjadi kesalahan yang tidak diketahui saat mengambil lokasi. Menampilkan jadwal & lokasi untuk Medan.";
-                                break;
-                        }
-                        if (alertMessage) {
-                            alert(alertMessage);
-                        }
-                    }
-                );
-            } else {
-                fetchPrayerTimings(fallbackLat, fallbackLon);
-                fetchCityName(fallbackLat, fallbackLon);
-                alert("Browser tidak mendukung lokasi. Menampilkan jadwal & lokasi untuk Medan.");
-            }
-        }
-
-        // --- DOA HARIAN FEATURE ---
-        function setupDoaHarian() {
-            function renderDoaListView(filter) {
-                doaListContainer.innerHTML = '';
-                let filteredData = (filter === 'bookmarked') ? doaHarianData.filter(doa => bookmarkedDoas.includes(doa.id)) : doaHarianData;
-                if (filteredData.length === 0) {
-                    doaListContainer.innerHTML = `<p style="text-align:center; margin-top: 2rem; color: var(--text-light);">Belum ada doa yang ditandai.</p>`;
-                    return;
-                }
-                filteredData.forEach(doa => {
-                    const item = document.createElement('div');
-                    item.className = 'doa-list-item';
-                    item.innerHTML = `<span class="num">${doa.id}</span><div class="details"><div class="title">${doa.title}</div><div class="subtitle">${doa.subtitle}</div></div><span class="arabic">${doa.arabic.split(' ')[0]}...</span>`;
-                    item.addEventListener('click', () => showSingleDoa(doa.id));
-                    doaListContainer.appendChild(item);
-                });
-            }
-            function showSingleDoa(doaId) {
-                const doa = doaHarianData.find(d => d.id === doaId);
-                if (!doa) return;
-                currentOpenDoaId = doa.id;
-                singleDoaModal.querySelector('#single-doa-modal-title').textContent = doa.title;
-                singleDoaModal.querySelector('#single-doa-modal-body').innerHTML = `<p class="single-doa-arabic">${doa.arabic}</p><p class="single-doa-arti"><b>Artinya:</b> ${doa.arti}</p>`;
-                updateBookmarkIcon();
-                singleDoaModal.style.display = 'flex';
-                localStorage.setItem('last_read_doa_id', doa.id);
-                lastReadDoaId = doa.id;
-                renderLastRead();
-            }
-            function renderLastRead() {
-                if (lastReadDoaId) {
-                    const doa = doaHarianData.find(d => d.id == lastReadDoaId);
-                    lastReadCardText.textContent = doa ? doa.title : (translations[currentLanguage].no_last_read || 'No prayers have been read yet');
-                } else {
-                    lastReadCardText.textContent = translations[currentLanguage].no_last_read || 'No prayers have been read yet';
-                }
-            }
-            lastReadCard.addEventListener('click', () => { if (lastReadDoaId) showSingleDoa(parseInt(lastReadDoaId)); });
-            function updateBookmarkIcon() { singleDoaModal.querySelector('#bookmark-doa-btn').classList.toggle('bookmarked', bookmarkedDoas.includes(currentOpenDoaId)); }
-            singleDoaModal.querySelector('#bookmark-doa-btn').addEventListener('click', () => {
-                const index = bookmarkedDoas.indexOf(currentOpenDoaId);
-                if (index > -1) bookmarkedDoas.splice(index, 1);
-                else bookmarkedDoas.push(currentOpenDoaId);
-                localStorage.setItem('bookmarked_doas', JSON.stringify(bookmarkedDoas));
-                updateBookmarkIcon();
-                if (document.querySelector('.tab-item.active').dataset.tab === 'bookmarked') renderDoaListView('bookmarked');
-            });
-            document.querySelectorAll('.tab-item').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    document.querySelector('.tab-item.active').classList.remove('active');
-                    tab.classList.add('active');
-                    renderDoaListView(tab.dataset.tab);
-                });
-            });
-            singleDoaModal.querySelector('.close-button').addEventListener('click', () => singleDoaModal.style.display = 'none');
-        }
-
-        // --- DZIKIR & TASBIH FEATURE ---
-        function saveDzikirState() {
-            localStorage.setItem('dzikir_state', JSON.stringify(dzikirState));
-        }
-
-        function renderDzikirList() {
-            dzikirListContainer.innerHTML = '';
-            dzikirData.forEach(dzikir => {
-                const state = dzikirState[dzikir.id] || { count: 0, lap: 0, lastUpdate: 'Belum pernah' };
-                const item = document.createElement('div');
-                item.className = 'dzikir-item';
-                item.innerHTML = `
-                    <div class="dzikir-item-info">
-                        <span class="title">${dzikir.title}</span>
-                        <span class="timestamp">${state.lastUpdate}</span>
-                    </div>
-                    <div class="dzikir-item-progress">
-                        <span class="count">${state.count}/${dzikir.target}</span>
-                        <span class="lap">${state.lap} Putaran</span>
-                    </div>`;
-                item.addEventListener('click', () => showTasbihView(dzikir.id));
-                dzikirListContainer.appendChild(item);
-            });
-        }
-
-        function showTasbihView(id) {
-            currentDzikirId = id;
-            const dzikir = dzikirData.find(d => d.id === id);
-            const state = dzikirState[id] || { count: 0, lap: 0 };
-            tasbihTitle.textContent = dzikir.title;
-            tasbihCurrentCount.textContent = state.count;
-            tasbihTargetCount.textContent = `/ ${dzikir.target}`;
-            showView('tasbih-view');
-        }
-
-        function setupDzikir() {
-            tasbihTapArea.addEventListener('click', () => {
-                if (!currentDzikirId) return;
-                const dzikir = dzikirData.find(d => d.id === currentDzikirId);
-                let state = dzikirState[currentDzikirId];
-                if (!state) {
-                    state = { count: 0, lap: 0 };
-                    dzikirState[currentDzikirId] = state;
-                }
-                state.count++;
-                if (state.count > dzikir.target) {
-                    state.count = 1;
-                    state.lap++;
-                }
-                state.lastUpdate = new Date().toLocaleString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-                tasbihCurrentCount.textContent = state.count;
-                saveDzikirState();
-                if (navigator.vibrate) {
-                    navigator.vibrate(50);
-                }
-            });
-            tasbihResetBtn.addEventListener('click', () => {
-                if (!currentDzikirId) return;
-                dzikirState[currentDzikirId].count = 0;
-                dzikirState[currentDzikirId].lap = 0;
-                tasbihCurrentCount.textContent = 0;
-                saveDzikirState();
-            });
-        }
-        
-        // --- NOTIFICATION FEATURE ---
-        function setupNotifications() {
-            if (!("Notification" in window)) {
-                console.log("Browser ini tidak mendukung notifikasi desktop");
-            } else if (Notification.permission === "granted") {
-                console.log("Izin notifikasi sudah diberikan.");
-            } else if (Notification.permission !== "denied") {
-                Notification.requestPermission().then(function (permission) {
-                    if (permission === "granted") {
-                        console.log("Izin notifikasi diberikan.");
-                        new Notification("Terima kasih! Notifikasi telah diaktifkan.");
-                    }
-                });
-            }
-        }
-
-        // --- SETTINGS & LANGUAGE ---
-        function setLanguage(lang) {
-            currentLanguage = lang;
-            document.querySelectorAll('[data-key]').forEach(el => {
-                if (translations[lang] && translations[lang][el.dataset.key]) {
-                    el.textContent = translations[lang][el.dataset.key];
-                }
-            });
-            updateDates();
-            generateCalendar();
-            if (window.latestPrayerTimes) {
-                renderPrayerTimes(window.latestPrayerTimes);
-                startCountdown(window.latestPrayerTimes);
-            }
-            renderLastRead();
-        }
-
-        function setupSettings() {
-            const darkModeToggle = document.getElementById('dark-mode-toggle');
-            const languageSelect = document.getElementById('language-select');
-            const applyTheme = (theme) => {
-                darkModeToggle.checked = theme === 'dark';
-                document.body.classList.toggle('dark-mode', theme === 'dark');
-            };
-            darkModeToggle.addEventListener('change', () => {
-                const theme = darkModeToggle.checked ? 'dark' : 'light';
-                localStorage.setItem('theme', theme);
-                applyTheme(theme);
-            });
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            applyTheme(savedTheme);
-            languageSelect.addEventListener('change', () => {
-                const selectedLang = languageSelect.value;
-                localStorage.setItem('language', selectedLang);
-                setLanguage(selectedLang);
-            });
-            const savedLang = localStorage.getItem('language') || 'id';
-            languageSelect.value = savedLang;
-            settingsBtn.addEventListener('click', (e) => { e.preventDefault(); settingsModal.style.display = 'flex'; closeSidebar(); });
-            settingsModal.querySelector('.close-button').addEventListener('click', () => settingsModal.style.display = 'none');
-            window.addEventListener('click', (e) => { if (e.target == settingsModal) settingsModal.style.display = 'none'; });
-        }
-
-        // --- INITIALIZATION ---
-        setupNavigation();
-        setupSettings();
-        setupNotifications();
-        setupDoaHarian();
-        setupDzikir();
-        getLocation();
-        showView('prayer-times-view');
-        setLanguage(localStorage.getItem('language') || 'id');
-        setInterval(() => { if (window.latestPrayerTimes) renderPrayerTimes(window.latestPrayerTimes); }, 60000);
-    });
+    // --- DATA ---
+    const dzikirData = [
+      { id: 'dzikir_1', title: 'سبحان الله وبحمده، سبحان الله العظيم', target: 100 },
+      { id: 'dzikir_2', title: 'بسم الله الرحمن الرحيم', target: 33 },
+      { id: 'dzikir_3', title: 'Salawat', target: 33 },
+      { id: 'dzikir_4', title: 'Allahu Akbar', target: 33 },
+      { id: 'dzikir_5', title: 'La ilaha illallah', target: 33 },
+      { id: 'dzikir_6', title: 'Alhamdulillah', target: 33 },
+      { id: 'dzikir_7', title: 'Astaghfirullah', target: 33 },
+    ];
+
+    const doaHarianData = [
+        { id: 1, title: "Doa Bangun Tidur", subtitle: "Adab memulai hari", arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ", arti: "Segala puji bagi Allah yang telah menghidupkan kami setelah mematikan kami, dan kepada-Nya lah kami akan dibangkitkan." },
+        { id: 2, title: "Doa Masuk Toilet", subtitle: "Memohon perlindungan", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ", arti: "Ya Allah, sesungguhnya aku berlindung kepada-Mu dari setan laki-laki dan setan perempuan." },
+        { id: 3, title: "Doa Keluar Toilet", subtitle: "Memohon ampunan", arabic: "غُفْرَانَكَ", arti: "Aku memohon ampunan-Mu." },
+        { id: 4, title: "Doa Sebelum Wudhu", subtitle: "Niat bersuci", arabic: "بِسْمِ اللَّهِ", arti: "Dengan menyebut nama Allah." },
+        { id: 5, title: "Doa Setelah Wudhu", subtitle: "Menyempurnakan wudhu", arabic: "أَشْهَدُ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ", arti: "Aku bersaksi bahwa tiada Tuhan selain Allah semata, tiada sekutu bagi-Nya, dan aku bersaksi bahwa Muhammad adalah hamba dan utusan-Nya." },
+        { id: 6, title: "Doa Mengenakan Pakaian", subtitle: "Mensyukuri nikmat", arabic: "الْحَمْدُ لِلَّهِ الَّذِي كَسَانِي هَذَا وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلاَ قُوَّةٍ", arti: "Segala puji bagi Allah yang telah memberiku pakaian ini dan menganugerahkannya kepadaku tanpa daya dan kekuatan dariku." },
+        { id: 7, title: "Doa Melepas Pakaian", subtitle: "Adab melepas pakaian", arabic: "بِسْمِ اللَّهِ", arti: "Dengan menyebut nama Allah." },
+        { id: 8, title: "Doa Keluar Rumah", subtitle: "Memohon perlindungan", arabic: "بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ لاَ حَوْلَ وَلاَ قُوَّةَ إِلاَّ بِاللَّهِ", arti: "Dengan nama Allah, aku bertawakal kepada Allah, tiada daya dan kekuatan kecuali dengan pertolongan Allah." },
+        { id: 9, title: "Doa Masuk Rumah", subtitle: "Memohon kebaikan", arabic: "بِسْمِ اللَّهِ وَلَجْنَا وَبِسْمِ اللَّهِ خَرَجْنَا وَعَلَى رَبِّنَا تَوَكَّلْنَا", arti: "Dengan nama Allah kami masuk, dan dengan nama Allah kami keluar, dan kepada Tuhan kami, kami bertawakal." },
+        { id: 10, title: "Doa Pergi ke Masjid", subtitle: "Langkah menuju kebaikan", arabic: "اللَّهُمَّ اجْعَلْ فِي قَلْبِي نُورًا وَفِي لِسَانِي نُورًا...", arti: "Ya Allah, jadikanlah cahaya di hatiku, cahaya di lidahku..." },
+        { id: 11, title: "Doa Masuk Masjid", subtitle: "Memohon rahmat", arabic: "اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ", arti: "Ya Allah, bukakanlah untukku pintu-pintu rahmat-Mu." },
+        { id: 12, title: "Doa Keluar Masjid", subtitle: "Memohon karunia", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ", arti: "Ya Allah, sesungguhnya aku memohon kepada-Mu dari karunia-Mu." },
+        { id: 13, title: "Doa Sebelum Makan", subtitle: "Agar makanan berkah", arabic: "بِسْمِ اللَّهِ", arti: "Dengan menyebut nama Allah." },
+        { id: 14, title: "Doa Sesudah Makan", subtitle: "Tanda bersyukur", arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا وَرَZَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلاَ قُوَّةٍ", arti: "Segala puji bagi Allah yang telah memberiku makanan ini dan menganugerahkannya kepadaku tanpa daya dan kekuatan dariku." },
+        { id: 15, title: "Doa Ketika Lupa Basmalah", subtitle: "Jika lupa di awal", arabic: "بِسْمِ اللَّهِ أَوَّلَهُ وَآخِرَهُ", arti: "Dengan nama Allah di awal dan di akhirnya." },
+        { id: 16, title: "Doa Minum Air Zamzam", subtitle: "Memohon kebaikan", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا وَاسِعًا وَشِفَاءً مِنْ كُلِّ دَاءٍ", arti: "Ya Allah, aku memohon kepada-Mu ilmu yang bermanfaat, rezeki yang luas, dan kesembuhan dari segala penyakit." },
+        { id: 17, title: "Doa Berbuka Puasa", subtitle: "Saat berbuka puasa", arabic: "ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ وَثَبَتَ الأَجْرُ إِنْ شَاءَ اللَّهُ", arti: "Telah hilang dahaga, telah basah urat-urat, dan telah tetap pahala, insya Allah." },
+        { id: 18, title: "Doa Sebelum Tidur", subtitle: "Adab mengakhiri hari", arabic: "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا", arti: "Dengan nama-Mu ya Allah aku mati dan aku hidup." },
+        { id: 19, title: "Doa Ketika Mimpi Buruk", subtitle: "Memohon perlindungan", arabic: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ غَضَبِهِ وَعِقَابِهِ وَشَرِّ عِبَادِهِ...", arti: "Aku berlindung dengan kalimat-kalimat Allah yang sempurna dari kemurkaan-Nya, siksa-Nya, dan kejahatan hamba-hamba-Nya..." },
+        { id: 20, title: "Doa Naik Kendaraan", subtitle: "Memohon keselamatan", arabic: "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ", arti: "Maha Suci Dzat yang telah menundukkan semua ini bagi kami padahal kami sebelumnya tidak mampu menguasainya." },
+        { id: 21, title: "Doa Safar (Bepergian)", subtitle: "Memohon kemudahan", arabic: "اللَّهُمَّ هَوِّنْ عَلَيْنَا سَفَرَنَا هَذَا وَاطْوِ عَنَّا بُعْدَهُ", arti: "Ya Allah, mudahkanlah perjalanan kami ini, dan dekatkanlah jaraknya bagi kami." },
+        { id: 22, title: "Doa Tiba di Tujuan", subtitle: "Rasa syukur", arabic: "الْحَمْدُ لِلَّهِ الَّذِي سَلَّمَنِي", arti: "Segala puji bagi Allah yang telah menyelamatkanku." },
+        { id: 23, title: "Doa Menjenguk Orang Sakit", subtitle: "Mendoakan kesembuhan", arabic: "لاَ بَأْسَ طَهُورٌ إِنْ شَاءَ اللَّهُ", arti: "Tidak mengapa, semoga menjadi pembersih (dosa), insya Allah." },
+        { id: 24, title: "Doa Ketika Hujan Turun", subtitle: "Memohon hujan bermanfaat", arabic: "اللَّهُمَّ صَيِّبًا نَافِعًا", arti: "Ya Allah, (jadikanlah hujan ini) hujan yang bermanfaat." },
+        { id: 25, title: "Doa Setelah Hujan", subtitle: "Rahmat dari Allah", arabic: "مُطِرْنَا بِفَضْلِ اللَّهِ وَرَحْمَتِهِ", arti: "Kita diberi hujan karena karunia dan rahmat Allah." },
+        { id: 26, title: "Doa Melihat Petir", subtitle: "Tanda kebesaran Allah", arabic: "سُبْحَانَ الَّذِي يُسَبِّحُ الرَّعْدُ بِحَمْدِهِ وَالْمَلاَئِكَةُ مِنْ خِيفَتِهِ", arti: "Maha Suci Dzat yang petir bertasbih dengan memuji-Nya, dan para malaikat pun (bertasbih) karena takut kepada-Nya." },
+        { id: 27, title: "Doa Ketika Angin Kencang", subtitle: "Memohon kebaikan", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَهَا وَأَعُوذُ بِكَ مِنْ شَرِّهَا", arti: "Ya Allah, aku memohon kepada-Mu kebaikannya dan aku berlindung kepada-Mu dari keburukannya." },
+        { id: 28, title: "Doa Bercermin", subtitle: "Agar akhlak baik", arabic: "اللَّهُمَّ كَمَا حَسَّنْتَ خَلْقِي فَحَسِّنْ خُلُقِي", arti: "Ya Allah, sebagaimana Engkau telah memperindah rupaku, maka perindahlah akhlakku." },
+        { id: 29, title: "Doa untuk Kedua Orang Tua", subtitle: "Tanda bakti", arabic: "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا", arti: "Wahai Tuhanku, ampunilah aku dan kedua orang tuaku, dan sayangilah mereka sebagaimana mereka telah menyayangiku di waktu kecil." },
+        { id: 30, title: "Doa Kebaikan Dunia Akhirat", subtitle: "Doa sapu jagat", arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ", arti: "Ya Tuhan kami, berilah kami kebaikan di dunia dan kebaikan di akhirat, dan peliharalah kami dari siksa neraka." },
+        { id: 31, title: "Doa Sebelum Belajar", subtitle: "Memohon ilmu", arabic: "رَبِّ زِدْنِي عِلْمًا", arti: "Wahai Tuhanku, tambahkanlah ilmu kepadaku." },
+        { id: 32, title: "Doa Sesudah Belajar", subtitle: "Agar ilmu bermanfaat", arabic: "اللَّهُمَّ انْفَعْنِي بِمَا عَلَّمْتَنِي وَعَلِّمْنِي مَا يَنْفَعُنِي وَزِدْنِي عِلْمًا", arti: "Ya Allah, berilah manfaat atas apa yang telah Engkau ajarkan kepadaku, ajarilah aku apa yang bermanfaat bagiku, dan tambahkanlah ilmu kepadaku." },
+        { id: 33, title: "Doa Penutup Majelis", subtitle: "Kaffaratul Majlis", arabic: "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ أَشْهَدُ أَنْ لاَ إِلَهَ إِلاَّ أَنْتَ أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ", arti: "Maha Suci Engkau ya Allah, dan dengan memuji-Mu, aku bersaksi bahwa tiada Tuhan selain Engkau, aku memohon ampun dan bertaubat kepada-Mu." },
+        { id: 34, title: "Doa Ketika Bersin", subtitle: "Mengucap syukur", arabic: "الْحَمْدُ لِلَّهِ", arti: "Segala puji bagi Allah." },
+        { id: 35, title: "Jawaban Ketika Orang Bersin", subtitle: "Mendoakan saudara", arabic: "يَرْحَمُكَ اللَّهُ", arti: "Semoga Allah merahmatimu." },
+        { id: 36, title: "Doa Ketika Marah", subtitle: "Meredam amarah", arabic: "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ", arti: "Aku berlindung kepada Allah dari setan yang terkutuk." },
+        { id: 37, title: "Doa Masuk Pasar", subtitle: "Memohon kebaikan pasar", arabic: "لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ...", arti: "Tiada Tuhan selain Allah semata, tiada sekutu bagi-Nya..." },
+        { id: 38, title: "Doa Ketika Tertimpa Musibah", subtitle: "Kalimat istirja'", arabic: "إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ", arti: "Sesungguhnya kami milik Allah dan kepada-Nya lah kami akan kembali." },
+        { id: 39, title: "Doa untuk Pengantin Baru", subtitle: "Mendoakan keberkahan", arabic: "بَارَكَ اللَّهُ لَكَ وَبَارَكَ عَلَيْكَ وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ", arti: "Semoga Allah memberkahimu, dan memberkahi atasmu, dan mengumpulkan kalian berdua dalam kebaikan." },
+        { id: 40, title: "Doa Ziarah Kubur", subtitle: "Salam kepada ahli kubur", arabic: "السَّلاَمُ عَلَى أَهْلِ الدِّيَارِ مِنَ الْمُؤْمِنِينَ وَالْمُسْلِمِينَ...", arti: "Keselamatan atas penghuni kubur dari kaum mukminin dan muslimin..." },
+        { id: 41, title: "Doa Melihat Hilal", subtitle: "Menyambut bulan baru", arabic: "اللَّهُ أَكْبَرُ، اللَّهُمَّ أَهِلَّهُ عَلَيْنَا بِالْيُمْنِ وَالإِيمَانِ وَالسَّلاَمَةِ وَالإِسْلاَمِ", arti: "Allah Maha Besar, ya Allah, tampakkanlah bulan itu kepada kami dengan membawa keberkahan dan keimanan, keselamatan dan Islam." },
+        { id: 42, title: "Doa Agar Diberi Kesabaran", subtitle: "Memohon keteguhan", arabic: "رَبَّنَا أَفْرِغْ عَلَيْنَا صَبْرًا وَثَبِّتْ أَقْدَامَنَا", arti: "Ya Tuhan kami, limpahkanlah kesabaran kepada kami dan kukuhkanlah pendirian kami." },
+        { id: 43, title: "Doa Mohon Petunjuk", subtitle: "Meminta bimbingan", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى وَالتُّقَى وَالْعَفَافَ وَالْغِنَى", arti: "Ya Allah, aku memohon kepada-Mu petunjuk, ketakwaan, kesucian diri, dan kecukupan." },
+        { id: 44, title: "Doa Terhindar dari Sifat Malas", subtitle: "Memohon semangat", arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ", arti: "Ya Allah, aku berlindung kepada-Mu dari kelemahan dan kemalasan." },
+        { id: 45, title: "Doa Agar Diteguhkan Hati", subtitle: "Istiqamah dalam iman", arabic: "يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَى دِينِكَ", arti: "Wahai Dzat yang membolak-balikkan hati, teguhkanlah hatiku di atas agama-Mu." },
+        { id: 46, title: "Doa Memohon Ampunan & Rahmat", subtitle: "Permohonan ampunan", arabic: "رَبَّنَا ظَلَمْنَا أَنْفُسَنَا وَإِنْ لَمْ تَغْفِرْ لَنَا وَتَرْحَمْنَا لَنَكُونَنَّ مِنَ الْخَاسِرِينَ", arti: "Ya Tuhan kami, kami telah menzalimi diri kami sendiri, dan jika Engkau tidak mengampuni kami dan memberi rahmat kepada kami, niscaya kami termasuk orang-orang yang rugi." },
+        { id: 47, title: "Doa Saat Sulit Tidur", subtitle: "Agar tidur nyenyak", arabic: "اللَّهُمَّ غَارَتِ النُّجُومُ وَهَدَأَتِ الْعُيُونُ...", arti: "Ya Allah, bintang-bintang telah terbenam, mata-mata telah terpejam..." },
+        { id: 48, title: "Doa Ketika Memulai Pekerjaan", subtitle: "Memohon kelancaran", arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ خَيْرِ هَذَا الْعَمَلِ وَخَيْرِ مَا فِيهِ", arti: "Ya Allah, aku memohon kepada-Mu kebaikan pekerjaan ini dan kebaikan yang ada di dalamnya." },
+        { id: 49, title: "Doa Setelah Selesai Bekerja", subtitle: "Rasa syukur", arabic: "الْحَمْدُ لِلَّهِ الَّذِي بِنِعْمَتِهِ تَتِمُّ الصَّالِحَاتُ", arti: "Segala puji bagi Allah yang dengan nikmat-Nya sempurnalah segala kebaikan." },
+        { id: 50, title: "Doa Ketika Mendengar Kabar Baik", subtitle: "Ekspresi kebahagiaan", arabic: "الْحَمْدُ لِلَّهِ الَّذِي بِنِعْمَتِهِ تَتِمُّ الصَّالِحَاتُ", arti: "Segala puji bagi Allah yang dengan nikmat-Nya sempurnalah segala kebaikan." },
+        { id: 51, title: "Doa Ketika Mendengar Kabar Buruk", subtitle: "Menjaga kesabaran", arabic: "الْحَمْدُ لِلَّهِ عَلَى كُلِّ حَالٍ", arti: "Segala puji bagi Allah atas segala keadaan." },
+        { id: 52, "title": "Doa Memohon Jodoh Terbaik", "subtitle": "Bagi yang belum menikah", "arabic": "رَبِّ لاَ تَذَرْنِي فَرْدًا وَأَنْتَ خَيْرُ الْوَارِثِينَ", "arti": "Ya Tuhanku, janganlah Engkau biarkan aku hidup seorang diri, dan Engkaulah pewaris yang paling baik." },
+        { id: 53, "title": "Doa Mohon Keturunan yang Baik", "subtitle": "Doa Nabi Zakaria", "arabic": "رَبِّ هَبْ لِي مِنْ لَدُنْكَ ذُرِّيَّةً طَيِّبَةً إِنَّكَ سَمِيعُ الدُّعَاءِ", "arti": "Ya Tuhanku, berilah aku dari sisi-Mu seorang anak yang baik. Sesungguhnya Engkau Maha Pendengar doa." },
+        { id: 54, "title": "Doa Agar Terhindar dari Utang", "subtitle": "Memohon kecukupan", "arabic": "اللَّهُمَّ اكْفِنِي بِحَلاَلِكَ عَنْ حَرَامِكَ وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ", "arti": "Ya Allah, cukupkanlah aku dengan yang halal dan jauhkanlah aku dari yang haram, dan cukupkanlah aku dengan karunia-Mu dari bergantung pada selain-Mu." }
+    ];
+    
+    const translations = {
+        'id': { 'nav_title': 'Menu Navigasi', 'nav_doa': '🤲 Doa Harian', 'nav_quran': '📖 Al-Qur\'an', 'nav_dzikir': '📿 Dzikir', 'nav_kiblat': '🧭 Kiblat', 'nav_settings': '⚙️ Pengaturan', 'remaining_time': 'Waktu Tersisa', 'settings_title': 'Pengaturan', 'settings_dark_mode': 'Mode Malam', 'settings_language': 'Bahasa', 'settings_about': 'Tentang Aplikasi', 'last_read': 'TERAKHIR DIBACA', 'no_last_read': 'Belum ada doa yang dibaca', 'all_doa': 'Semua Doa', 'bookmarked': 'Ditandai', 'Imsak': 'Imsak', 'Fajr': 'Subuh', 'Sunrise': 'Terbit', 'Dhuhr': 'Zuhur', 'Asr': 'Asar', 'Maghrib': 'Magrib', 'Isha': 'Isya\'', 'Imsak_desc': 'Notifikasi & Tanpa Suara Azan', 'Fajr_desc': 'Makkah #1 (Fajr)', 'Sunrise_desc': 'Notifikasi & Tanpa Suara Azan', 'Dhuhr_desc': 'Mishary Rashid', 'Asr_desc': 'Mishary Rashid', 'Maghrib_desc': 'Mishary Rashid', 'Isha_desc': 'Mishary Rashid' },
+        'en': { 'nav_title': 'Navigation Menu', 'nav_doa': '🤲 Daily Prayers', 'nav_quran': '📖 Al-Qur\'an', 'nav_dzikir': '📿 Dhikr', 'nav_kiblat': '🧭 Qibla', 'nav_settings': '⚙️ Settings', 'remaining_time': 'Time Remaining', 'settings_title': 'Settings', 'settings_dark_mode': 'Dark Mode', 'settings_language': 'Language', 'settings_about': 'About App', 'last_read': 'LAST READ', 'no_last_read': 'No prayers have been read yet', 'all_doa': 'All Prayers', 'bookmarked': 'Bookmarked', 'Imsak': 'Imsak', 'Fajr': 'Fajr', 'Sunrise': 'Sunrise', 'Dhuhr': 'Dhuhr', 'Asr': 'Asr', 'Maghrib': 'Maghrib', 'Isha': 'Isha', 'Imsak_desc': 'Notification & No Adhan Sound', 'Fajr_desc': 'Makkah #1 (Fajr)', 'Sunrise_desc': 'Notification & No Adhan Sound', 'Dhuhr_desc': 'Mishary Rashid', 'Asr_desc': 'Mishary Rashid', 'Maghrib_desc': 'Mishary Rashid', 'Isha_desc': 'Mishary Rashid' },
+        'ar': { 'nav_title': 'قائمة التنقل', 'nav_doa': '🤲 أدعية يومية', 'nav_quran': '📖 القرآن الكريم', 'nav_dzikir': '📿 أذكار', 'nav_kiblat': '🧭 القبلة', 'nav_settings': '⚙️ الإعدادات', 'remaining_time': 'الوقت المتبقي', 'settings_title': 'الإعدادات', 'settings_dark_mode': 'الوضع الداكن', 'settings_language': 'اللغة', 'settings_about': 'حول التطبيق', 'last_read': 'آخر قراءة', 'no_last_read': 'لم تتم قراءة أي دعاء بعد', 'all_doa': 'كل الأدعية', 'bookmarked': 'المفضلة', 'Imsak': 'إمساك', 'Fajr': 'الفجر', 'Sunrise': 'الشروق', 'Dhuhr': 'الظهر', 'Asr': 'العصر', 'Maghrib': 'المغرب', 'Isha': 'العشاء', 'Imsak_desc': 'إشعار وبدون صوت أذان', 'Fajr_desc': 'مكة #1 (الفجر)', 'Sunrise_desc': 'إشعار وبدون صوت أذان', 'Dhuhr_desc': 'مشاري راشد', 'Asr_desc': 'مشاري راشد', 'Maghrib_desc': 'مشاري راشد', 'Isha_desc': 'مشاري راشد' },
+        'tr': { 'nav_title': 'Gezinme Menüsü', 'nav_doa': '🤲 Günlük Dualar', 'nav_quran': '📖 Kur\'an-ı Kerim', 'nav_dzikir': '📿 Zikir', 'nav_kiblat': '🧭 Kıble', 'nav_settings': '⚙️ Ayarlar', 'remaining_time': 'Kalan Süre', 'settings_title': 'Ayarlar', 'settings_dark_mode': 'Karanlık Mod', 'settings_language': 'Dil', 'settings_about': 'Uygulama Hakkında', 'last_read': 'SON OKUNAN', 'no_last_read': 'Henüz dua okunmadı', 'all_doa': 'Tüm Dualar', 'bookmarked': 'İşaretli', 'Imsak': 'İmsak', 'Fajr': 'Sabah', 'Sunrise': 'Güneş', 'Dhuhr': 'Öğle', 'Asr': 'İkindi', 'Maghrib': 'Akşam', 'Isha': 'Yatsı', 'Imsak_desc': 'Bildirim & Ezan Sesi Yok', 'Fajr_desc': 'Mekke #1 (Sabah)', 'Sunrise_desc': 'Bildirim & Ezan Sesi Yok', 'Dhuhr_desc': 'Mishary Rashid', 'Asr_desc': 'Mishary Rashid', 'Maghrib_desc': 'Mishary Rashid', 'Isha_desc': 'Mishary Rashid' },
+        'fr':{ 'nav_title': 'Menu de navigation', 'nav_doa': '🤲 Prières quotidiennes', 'nav_quran': '📖 Al-Qur\'an', 'nav_dzikir': '📿 Dhikr', 'nav_kiblat': '🧭 Qibla', 'nav_settings': '⚙️ Paramètres', 'remaining_time': 'Temps restant', 'settings_title': 'Paramètres', 'settings_dark_mode': 'Mode sombre', 'settings_language': 'Langue', 'settings_about': 'À propos de l\'application', 'last_read': 'DERNIÈRE LECTURE', 'no_last_read': 'Aucune prière n\'a été lue', 'all_doa': 'Toutes les prières', 'bookmarked': 'Marquées', 'Imsak': 'Imsak', 'Fajr': 'Fajr', 'Sunrise': 'Lever du soleil', 'Dhuhr': 'Dhuhr', 'Asr': 'Asr', 'Maghrib': 'Maghrib', 'Isha': 'Isha', 'Imsak_desc': 'Notification & Pas de son Adhan', 'Fajr_desc': 'Makkah #1 (Fajr)', 'Sunrise_desc': 'Notification & Pas de son Adhan', 'Dhuhr_desc': 'Mishary Rashid', 'Asr_desc': 'Mishary Rashid', 'Maghrib_desc': 'Mishary Rashid', 'Isha_desc': 'Mishary Rashid' },
+        'es':{ 'nav_title': 'Menú de Navegación', 'nav_doa': '🤲 Oraciones Diarias', 'nav_quran': '📖 Al-Corán', 'nav_dzikir': '📿 Dhikr', 'nav_kiblat': '🧭 Quibla', 'nav_settings': '⚙️ Ajustes', 'remaining_time': 'Tiempo Restante', 'settings_title': 'Ajustes', 'settings_dark_mode': 'Modo Oscuro', 'settings_language': 'Idioma', 'settings_about': 'Acerca de la Aplicación', 'last_read': 'ÚLTIMA LECTURA', 'no_last_read': 'No se han leído oraciones', 'all_doa': 'Todas las Oraciones', 'bookmarked': 'Marcadas', 'Imsak': 'Imsak', 'Fajr': 'Fajr', 'Sunrise': 'Amanecer', 'Dhuhr': 'Dhuhr', 'Asr': 'Asr', 'Maghrib': 'Maghrib', 'Isha': 'Isha', 'Imsak_desc': 'Notificación y sin sonido de Adhan', 'Fajr_desc': 'Makkah #1 (Fajr)', 'Sunrise_desc': 'Notificación y sin sonido de Adhan', 'Dhuhr_desc': 'Mishary Rashid', 'Asr_desc': 'Mishary Rashid', 'Maghrib_desc': 'Mishary Rashid', 'Isha_desc': 'Mishary Rashid' },
+        'de':{ 'nav_title': 'Navigationsmenü', 'nav_doa': '🤲 Tägliche Gebete', 'nav_quran': '📖 Al-Qur\'an', 'nav_dzikir': '📿 Dhikr', 'nav_kiblat': '🧭 Qibla', 'nav_settings': '⚙️ Einstellungen', 'remaining_time': 'Verbleibende Zeit', 'settings_title': 'Einstellungen', 'settings_dark_mode': 'Dunkelmodus', 'settings_language': 'Sprache', 'settings_about': 'Über die App', 'last_read': 'ZULETZT GELESEN', 'no_last_read': 'Noch keine Gebete gelesen', 'all_doa': 'Alle Gebete', 'bookmarked': 'Markiert', 'Imsak': 'Imsak', 'Fajr': 'Fajr', 'Sunrise': 'Sonnenaufgang', 'Dhuhr': 'Dhuhr', 'Asr': 'Asr', 'Maghrib': 'Maghrib', 'Isha': 'Isha', 'Imsak_desc': 'Benachrichtigung & kein Adhan-Ton', 'Fajr_desc': 'Mekka #1 (Fajr)', 'Sunrise_desc': 'Benachrichtigung & kein Adhan-Ton', 'Dhuhr_desc': 'Mishary Rashid', 'Asr_desc': 'Mishary Rashid', 'Maghrib_desc': 'Mishary Rashid', 'Isha_desc': 'Mishary Rashid' },
+        'ru':{ 'nav_title': 'Навигационное меню', 'nav_doa': '🤲 Ежедневные молитвы', 'nav_quran': '📖 Аль-Коран', 'nav_dzikir': '📿 Зикр', 'nav_kiblat': '🧭 Кибла', 'nav_settings': '⚙️ Настройки', 'remaining_time': 'Оставшееся время', 'settings_title': 'Настройки', 'settings_dark_mode': 'Темный режим', 'settings_language': 'Язык', 'settings_about': 'О приложении', 'last_read': 'ПОСЛЕДНЕЕ ПРОЧТЕНИЕ', 'no_last_read': 'Молитвы еще не читались', 'all_doa': 'Все молитвы', 'bookmarked': 'В закладках', 'Imsak': 'Имсак', 'Fajr': 'Фаджр', 'Sunrise': 'Восход', 'Dhuhr': 'Зухр', 'Asr': 'Аср', 'Maghrib': 'Магриб', 'Isha': 'Иша', 'Imsak_desc': 'Уведомление и без звука Азана', 'Fajr_desc': 'Мекка #1 (Фаджр)', 'Sunrise_desc': 'Уведомление и без звука Азана', 'Dhuhr_desc': 'Мишари Рашид', 'Asr_desc': 'Мишари Рашид', 'Maghrib_desc': 'Мишари Рашид', 'Isha_desc': 'Мишари Рашид' },
+        'ur':{ 'nav_title': 'نیویگیشن مینو', 'nav_doa': '🤲 روزانہ کی دعائیں', 'nav_quran': '📖 القرآن', 'nav_dzikir': '📿 ذکر', 'nav_kiblat': '🧭 قبلہ', 'nav_settings': '⚙️ ترتیبات', 'remaining_time': 'باقی وقت', 'settings_title': 'ترتیبات', 'settings_dark_mode': 'ڈارک موڈ', 'settings_language': 'زبان', 'settings_about': 'ایپ کے بارے میں', 'last_read': 'آخری بار پڑھا', 'no_last_read': 'کوئی دعا نہیں پڑھی گئی', 'all_doa': 'تمام دعائیں', 'bookmarked': 'نشان زدہ', 'Imsak': 'امساک', 'Fajr': 'فجر', 'Sunrise': 'طلوع آفتاب', 'Dhuhr': 'ظہر', 'Asr': 'عصر', 'Maghrib': 'مغرب', 'Isha': 'عشاء', 'Imsak_desc': 'اطلاع اور اذان کی آواز نہیں', 'Fajr_desc': 'مکہ #1 (فجر)', 'Sunrise_desc': 'اطلاع اور اذان کی آواز نہیں', 'Dhuhr_desc': 'مشاری راشد', 'Asr_desc': 'مشاری راشد', 'Maghrib_desc': 'مشاری راشد', 'Isha_desc': 'مشاری راشد' },
+        'bn':{ 'nav_title': 'নেভিগেশন মেনু', 'nav_doa': '🤲 দৈনিক দোয়া', 'nav_quran': '📖 আল-কুরআন', 'nav_dzikir': '📿 যিকির', 'nav_kiblat': '🧭 কিবলা', 'nav_settings': '⚙️ সেটিংস', 'remaining_time': 'বাকি সময়', 'settings_title': 'সেটিংস', 'settings_dark_mode': 'ডার্ক মোড', 'settings_language': 'ভাষা', 'settings_about': 'অ্যাপ সম্পর্কে', 'last_read': 'শেষ পঠিত', 'no_last_read': 'এখনও কোন দোয়া পড়া হয়নি', 'all_doa': 'সমস্ত দোয়া', 'bookmarked': 'বুকমার্ক করা', 'Imsak': 'ইمسাক', 'Fajr': 'ফজর', 'Sunrise': 'সূর্যোদয়', 'Dhuhr': 'যোহর', 'Asr': 'আসর', 'Maghrib': 'মাগরিব', 'Isha': 'ইশা', 'Imsak_desc': 'বিজ্ঞপ্তি এবং আযানের শব্দ নেই', 'Fajr_desc': 'মক্কা #1 (ফজর)', 'Sunrise_desc': 'বিজ্ঞপ্তি এবং আযানের শব্দ নেই', 'Dhuhr_desc': 'মিশারি রশিদ', 'Asr_desc': 'মিশারি রশিদ', 'Maghrib_desc': 'মিশারি রশিদ', 'Isha_desc': 'মিশারি রশিদ' },
+    };
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- GLOBAL VARIABLES & STATE ---
+        let currentLanguage = 'id';
+        let countdownInterval;
+        let bookmarkedDoas = JSON.parse(localStorage.getItem('bookmarked_doas')) || [];
+        let lastReadDoaId = localStorage.getItem('last_read_doa_id');
+        let currentOpenDoaId = null;
+        window.latestPrayerTimes = null;
+
+        let dzikirState = JSON.parse(localStorage.getItem('dzikir_state')) || {};
+        let currentDzikirId = null;
+
+        // --- ELEMENT SELECTORS ---
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menu-toggle');
+        const views = document.querySelectorAll('.main-view');
+        const prayerTimesBtn = document.getElementById('prayer-times-btn');
+        const doaHarianBtn = document.getElementById('doa-harian-btn');
+        const dzikirBtn = document.getElementById('dzikir-btn');
+        const settingsBtn = document.getElementById('settings-btn');
+        const doaListContainer = document.getElementById('doa-list-container-view');
+        const lastReadCard = document.getElementById('last-read-doa-card');
+        const lastReadCardText = lastReadCard.querySelector('p');
+        const singleDoaModal = document.getElementById('single-doa-modal');
+        const settingsModal = document.getElementById('settings-modal');
+
+        const dzikirListContainer = document.getElementById('dzikir-list-container');
+        const tasbihView = document.getElementById('tasbih-view');
+        const tasbihTitle = document.getElementById('tasbih-title');
+        const tasbihCurrentCount = document.getElementById('tasbih-current-count');
+        const tasbihTargetCount = document.getElementById('tasbih-target-count');
+        const tasbihTapArea = document.getElementById('tasbih-tap-area');
+        const tasbihResetBtn = document.getElementById('tasbih-reset-btn');
+
+        // --- CORE APP LOGIC ---
+
+        function showView(viewId) {
+            document.querySelectorAll('.main-view, .full-modal').forEach(v => {
+                if (v.id !== 'tasbih-view') v.style.display = 'none';
+            });
+            const isTasbih = viewId === 'tasbih-view';
+            const targetView = document.getElementById(viewId);
+            if (isTasbih) {
+                document.querySelector('.app-container').style.display = 'none';
+                tasbihView.style.display = 'flex';
+            } else {
+                document.querySelector('.app-container').style.display = 'block';
+                tasbihView.style.display = 'none';
+                if (targetView) targetView.style.display = 'block';
+            }
+            const prayerView = document.getElementById('prayer-times-view');
+            menuToggle.style.display = (prayerView && prayerView.style.display === 'block') ? 'flex' : 'none';
+        }
+
+        function closeSidebar() {
+            menuToggle.classList.remove('open');
+            sidebar.classList.remove('open');
+        }
+
+        function setupNavigation() {
+            prayerTimesBtn.addEventListener('click', (e) => { e.preventDefault(); showView('prayer-times-view'); closeSidebar(); });
+            doaHarianBtn.addEventListener('click', (e) => { e.preventDefault(); showView('doa-view'); renderDoaListView('all'); closeSidebar(); });
+            dzikirBtn.addEventListener('click', (e) => { e.preventDefault(); showView('dzikir-view'); renderDzikirList(); closeSidebar(); });
+            document.querySelectorAll('.back-button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetViewId = btn.getAttribute('data-target-view');
+                    showView(targetViewId);
+                    if (targetViewId === 'dzikir-view') {
+                        renderDzikirList();
+                    }
+                });
+            });
+            menuToggle.addEventListener('click', (e) => { e.stopPropagation(); menuToggle.classList.toggle('open'); sidebar.classList.toggle('open'); });
+            document.addEventListener('click', (e) => {
+                if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                    closeSidebar();
+                }
+            });
+        }
+
+        // --- PRAYER TIMES FEATURE ---
+        const prayerUIData = { Imsak: { icon: '—', checkable: false }, Fajr: { icon: '—', checkable: true }, Sunrise: { icon: '—', checkable: false }, Dhuhr: { icon: '—', checkable: true }, Asr: { icon: '—', checkable: true }, Maghrib: { icon: '—', checkable: true }, Isha: { icon: '—', checkable: true } };
+
+        function adjustTimeByTwoMinutes(timeString) {
+            const [h, m] = timeString.split(':').map(Number);
+            const date = new Date();
+            date.setHours(h, m + 2, 0, 0); 
+            return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+        }
+
+        function generateCalendar() {
+            const calendarContainerEl = document.getElementById('calendar-view-container');
+            const dayNamesList = { id: ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"], en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], ar: ["أحد", "إثن", "ثلا", "أرب", "خمي", "جمع", "سبت"], tr: ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"], fr: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"], es: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"], de: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"], ru: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"], ur: ["اتوار", "پیر", "منگل", "بدھ", "جمعرات", "جمعہ", "ہفتہ"], bn: ["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহ", "শুক্র", "শনি"] };
+            const today = new Date();
+            const todayDayIndex = today.getDay();
+            let calendarHtml = '';
+            for (let i = 0; i < 7; i++) {
+                const date = new Date();
+                date.setDate(today.getDate() - (todayDayIndex - i));
+                const isToday = i === todayDayIndex;
+                calendarHtml += `<div class="day ${isToday ? 'today' : ''}"><span class="day-name">${dayNamesList[currentLanguage][i] || dayNamesList['id'][i]}</span><span class="day-number">${date.getDate()}</span></div>`;
+            }
+            if (calendarContainerEl) calendarContainerEl.innerHTML = calendarHtml;
+        }
+
+        function renderPrayerTimes(prayerTimes) {
+            const prayerListContainerEl = document.getElementById('prayer-list-container');
+            if (!prayerListContainerEl) return;
+            prayerListContainerEl.innerHTML = '';
+            let prayerHtml = '';
+            const prayerOrder = ['Imsak', 'Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+            const now = new Date();
+            const isAfterResetTime = now.getHours() >= 22;
+            prayerOrder.forEach(key => {
+                if (prayerTimes[key]) {
+                    const ui = prayerUIData[key];
+                    const prayerDate = new Date(`${now.toDateString()} ${prayerTimes[key]}`);
+                    let iconToShow = ui.icon;
+                    if (ui.checkable) {
+                        if (isAfterResetTime) iconToShow = '—';
+                        else if (now > prayerDate) iconToShow = '✔';
+                    }
+                    prayerHtml += `<div class="prayer-item"><span class="icon-status">${iconToShow}</span><div class="prayer-details"><div class="prayer-name">${translations[currentLanguage][key] || key}</div><div class="prayer-desc">${translations[currentLanguage][`${key}_desc`] || key}</div></div><div class="prayer-time-action"><div class="prayer-time">${prayerTimes[key]}</div><div class="prayer-action">🔊</div></div></div>`;
+                }
+            });
+            prayerListContainerEl.innerHTML = prayerHtml;
+        }
+
+        function startCountdown(prayerTimes) {
+            if (countdownInterval) clearInterval(countdownInterval);
+            
+            const prayerOrder = ['Imsak', 'Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+            
+            function update() {
+                const now = new Date();
+                let nextPrayerTime, nextPrayerName;
+
+                for (const name of prayerOrder) {
+                    const prayerDate = new Date(`${now.toDateString()} ${prayerTimes[name]}`);
+                    if (prayerDate > now) {
+                        nextPrayerTime = prayerDate;
+                        nextPrayerName = name;
+                        break;
+                    }
+                }
+
+                if (!nextPrayerTime) {
+                    const tomorrow = new Date(now);
+                    tomorrow.setDate(now.getDate() + 1);
+                    nextPrayerTime = new Date(`${tomorrow.toDateString()} ${prayerTimes['Imsak']}`);
+                    nextPrayerName = 'Imsak';
+                }
+
+                const diff = nextPrayerTime - now;
+                if (diff < 0) return;
+
+                const h = String(Math.floor(diff / 3600000)).padStart(2, '0');
+                const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+                const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+                
+                document.getElementById('countdown-timer').textContent = `${h}:${m}:${s}`;
+                document.getElementById('next-prayer-name').textContent = translations[currentLanguage][nextPrayerName] || nextPrayerName;
+            }
+
+            update();
+            countdownInterval = setInterval(update, 1000);
+        }
+
+        function updateDates() {
+            const hijriMonths = ["Muharram", "Safar", "Rabiul Awal", "Rabiul Akhir", "Jumadil Awal", "Jumadil Akhir", "Rajab", "Syaban", "Ramadhan", "Syawal", "Zulkaidah", "Zulhijah"];
+            const now = new Date();
+            const localeMap = { id: 'id-ID', en: 'en-US', ar: 'ar-SA', tr: 'tr-TR', fr: 'fr-FR', es: 'es-ES', de: 'de-DE', ru: 'ru-RU', ur: 'ur-PK', bn: 'bn-BD' };
+            const locale = localeMap[currentLanguage] || 'en-US';
+            document.getElementById('gregorian-date-display').textContent = now.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+            const hijriFmt = new Intl.DateTimeFormat('en-TN-u-ca-islamic', { day: 'numeric', month: 'numeric', year: 'numeric' });
+            const parts = hijriFmt.formatToParts(now);
+            const d = parts.find(p => p.type === 'day').value;
+            const m = parseInt(parts.find(p => p.type === 'month').value);
+            const y = parts.find(p => p.type === 'year').value.split(' ')[0];
+            document.getElementById('hijri-date-display').textContent = `${d} ${hijriMonths[m-1]} ${y} H`;
+        }
+
+        function fetchCityName(lat, lon) {
+            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`).then(r => r.json()).then(data => {
+                document.getElementById('city-name').textContent = data.address.city || data.address.town || data.address.village || "Lokasi tidak dikenal";
+            }).catch(console.error);
+        }
+
+        function fetchPrayerTimings(lat, lon) {
+            const ts = Math.floor(Date.now() / 1000);
+            fetch(`https://api.aladhan.com/v1/timings/${ts}?latitude=${lat}&longitude=${lon}&method=11`).then(r => r.json()).then(j => {
+                if (j.code === 200) {
+                    const originalTimings = j.data.timings;
+                    const adjustedTimings = {};
+
+                    for (const key in originalTimings) {
+                        adjustedTimings[key] = adjustTimeByTwoMinutes(originalTimings[key]);
+                    }
+                    
+                    window.latestPrayerTimes = adjustedTimings;
+                    renderPrayerTimes(adjustedTimings);
+                    startCountdown(adjustedTimings);
+                }
+            }).catch(console.error);
+        }
+
+        function getLocation() {
+            const fallbackLat = 3.5952, fallbackLon = 98.6722;
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    fetchPrayerTimings(pos.coords.latitude, pos.coords.longitude);
+                    fetchCityName(pos.coords.latitude, pos.coords.longitude);
+                }, () => {
+                    fetchPrayerTimings(fallbackLat, fallbackLon);
+                    fetchCityName(fallbackLat, fallbackLon);
+                    alert("Izin lokasi ditolak. Menampilkan jadwal & lokasi untuk Medan.");
+                });
+            } else {
+                fetchPrayerTimings(fallbackLat, fallbackLon);
+                fetchCityName(fallbackLat, fallbackLon);
+                alert("Browser tidak mendukung lokasi. Menampilkan jadwal & lokasi untuk Medan.");
+            }
+        }
+
+        // --- DOA HARIAN FEATURE ---
+        function setupDoaHarian() {
+            function renderDoaListView(filter) {
+                doaListContainer.innerHTML = '';
+                let filteredData = (filter === 'bookmarked') ? doaHarianData.filter(doa => bookmarkedDoas.includes(doa.id)) : doaHarianData;
+                if (filteredData.length === 0) {
+                    doaListContainer.innerHTML = `<p style="text-align:center; margin-top: 2rem; color: var(--text-light);">Belum ada doa yang ditandai.</p>`;
+                    return;
+                }
+                filteredData.forEach(doa => {
+                    const item = document.createElement('div');
+                    item.className = 'doa-list-item';
+                    item.innerHTML = `<span class="num">${doa.id}</span><div class="details"><div class="title">${doa.title}</div><div class="subtitle">${doa.subtitle}</div></div><span class="arabic">${doa.arabic.split(' ')[0]}...</span>`;
+                    item.addEventListener('click', () => showSingleDoa(doa.id));
+                    doaListContainer.appendChild(item);
+                });
+            }
+            function showSingleDoa(doaId) {
+                const doa = doaHarianData.find(d => d.id === doaId);
+                if (!doa) return;
+                currentOpenDoaId = doa.id;
+                singleDoaModal.querySelector('#single-doa-modal-title').textContent = doa.title;
+                singleDoaModal.querySelector('#single-doa-modal-body').innerHTML = `<p class="single-doa-arabic">${doa.arabic}</p><p class="single-doa-arti"><b>Artinya:</b> ${doa.arti}</p>`;
+                updateBookmarkIcon();
+                singleDoaModal.style.display = 'flex';
+                localStorage.setItem('last_read_doa_id', doa.id);
+                lastReadDoaId = doa.id;
+                renderLastRead();
+            }
+            function renderLastRead() {
+                if (lastReadDoaId) {
+                    const doa = doaHarianData.find(d => d.id == lastReadDoaId);
+                    lastReadCardText.textContent = doa ? doa.title : (translations[currentLanguage].no_last_read || 'No prayers have been read yet');
+                } else {
+                    lastReadCardText.textContent = translations[currentLanguage].no_last_read || 'No prayers have been read yet';
+                }
+            }
+            lastReadCard.addEventListener('click', () => { if (lastReadDoaId) showSingleDoa(parseInt(lastReadDoaId)); });
+            function updateBookmarkIcon() { singleDoaModal.querySelector('#bookmark-doa-btn').classList.toggle('bookmarked', bookmarkedDoas.includes(currentOpenDoaId)); }
+            singleDoaModal.querySelector('#bookmark-doa-btn').addEventListener('click', () => {
+                const index = bookmarkedDoas.indexOf(currentOpenDoaId);
+                if (index > -1) bookmarkedDoas.splice(index, 1);
+                else bookmarkedDoas.push(currentOpenDoaId);
+                localStorage.setItem('bookmarked_doas', JSON.stringify(bookmarkedDoas));
+                updateBookmarkIcon();
+                if (document.querySelector('.tab-item.active').dataset.tab === 'bookmarked') renderDoaListView('bookmarked');
+            });
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelector('.tab-item.active').classList.remove('active');
+                    tab.classList.add('active');
+                    renderDoaListView(tab.dataset.tab);
+                });
+            });
+            singleDoaModal.querySelector('.close-button').addEventListener('click', () => singleDoaModal.style.display = 'none');
+        }
+
+        // --- DZIKIR & TASBIH FEATURE ---
+        function saveDzikirState() {
+            localStorage.setItem('dzikir_state', JSON.stringify(dzikirState));
+        }
+
+        function renderDzikirList() {
+            dzikirListContainer.innerHTML = '';
+            dzikirData.forEach(dzikir => {
+                const state = dzikirState[dzikir.id] || { count: 0, lap: 0, lastUpdate: 'Belum pernah' };
+                const item = document.createElement('div');
+                item.className = 'dzikir-item';
+                item.innerHTML = `
+                    <div class="dzikir-item-info">
+                        <span class="title">${dzikir.title}</span>
+                        <span class="timestamp">${state.lastUpdate}</span>
+                    </div>
+                    <div class="dzikir-item-progress">
+                        <span class="count">${state.count}/${dzikir.target}</span>
+                        <span class="lap">${state.lap} Putaran</span>
+                    </div>`;
+                item.addEventListener('click', () => showTasbihView(dzikir.id));
+                dzikirListContainer.appendChild(item);
+            });
+        }
+
+        function showTasbihView(id) {
+            currentDzikirId = id;
+            const dzikir = dzikirData.find(d => d.id === id);
+            const state = dzikirState[id] || { count: 0, lap: 0 };
+            tasbihTitle.textContent = dzikir.title;
+            tasbihCurrentCount.textContent = state.count;
+            tasbihTargetCount.textContent = `/ ${dzikir.target}`;
+            showView('tasbih-view');
+        }
+
+        function setupDzikir() {
+            tasbihTapArea.addEventListener('click', () => {
+                if (!currentDzikirId) return;
+                const dzikir = dzikirData.find(d => d.id === currentDzikirId);
+                let state = dzikirState[currentDzikirId];
+                if (!state) {
+                    state = { count: 0, lap: 0 };
+                    dzikirState[currentDzikirId] = state;
+                }
+                state.count++;
+                if (state.count > dzikir.target) {
+                    state.count = 1;
+                    state.lap++;
+                }
+                state.lastUpdate = new Date().toLocaleString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                tasbihCurrentCount.textContent = state.count;
+                saveDzikirState();
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+            });
+            tasbihResetBtn.addEventListener('click', () => {
+                if (!currentDzikirId) return;
+                dzikirState[currentDzikirId].count = 0;
+                dzikirState[currentDzikirId].lap = 0;
+                tasbihCurrentCount.textContent = 0;
+                saveDzikirState();
+            });
+        }
+        
+        // --- NOTIFICATION FEATURE ---
+        function setupNotifications() {
+            if (!("Notification" in window)) {
+                console.log("Browser ini tidak mendukung notifikasi desktop");
+            } else if (Notification.permission === "granted") {
+                console.log("Izin notifikasi sudah diberikan.");
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(function (permission) {
+                    if (permission === "granted") {
+                        console.log("Izin notifikasi diberikan.");
+                        new Notification("Terima kasih! Notifikasi telah diaktifkan.");
+                    }
+                });
+            }
+        }
+
+        // --- SETTINGS & LANGUAGE ---
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            document.querySelectorAll('[data-key]').forEach(el => {
+                if (translations[lang] && translations[lang][el.dataset.key]) {
+                    el.textContent = translations[lang][el.dataset.key];
+                }
+            });
+            updateDates();
+            generateCalendar();
+            if (window.latestPrayerTimes) {
+                renderPrayerTimes(window.latestPrayerTimes);
+                startCountdown(window.latestPrayerTimes);
+            }
+            renderLastRead();
+        }
+
+        function setupSettings() {
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            const languageSelect = document.getElementById('language-select');
+            const applyTheme = (theme) => {
+                darkModeToggle.checked = theme === 'dark';
+                document.body.classList.toggle('dark-mode', theme === 'dark');
+            };
+            darkModeToggle.addEventListener('change', () => {
+                const theme = darkModeToggle.checked ? 'dark' : 'light';
+                localStorage.setItem('theme', theme);
+                applyTheme(theme);
+            });
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(savedTheme);
+            languageSelect.addEventListener('change', () => {
+                const selectedLang = languageSelect.value;
+                localStorage.setItem('language', selectedLang);
+                setLanguage(selectedLang);
+            });
+            const savedLang = localStorage.getItem('language') || 'id';
+            languageSelect.value = savedLang;
+            settingsBtn.addEventListener('click', (e) => { e.preventDefault(); settingsModal.style.display = 'flex'; closeSidebar(); });
+            settingsModal.querySelector('.close-button').addEventListener('click', () => settingsModal.style.display = 'none');
+            window.addEventListener('click', (e) => { if (e.target == settingsModal) settingsModal.style.display = 'none'; });
+        }
+
+        // --- INITIALIZATION ---
+        setupNavigation();
+        setupSettings();
+        setupNotifications();
+        setupDoaHarian();
+        setupDzikir();
+        getLocation();
+        showView('prayer-times-view');
+        setLanguage(localStorage.getItem('language') || 'id');
+        setInterval(() => { if (window.latestPrayerTimes) renderPrayerTimes(window.latestPrayerTimes); }, 60000);
+    });
 </script>
 </body>
-</html>
+  </html>
