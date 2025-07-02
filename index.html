@@ -612,7 +612,7 @@
             if (navigator.geolocation) {
                 const options = {
                     enableHighAccuracy: true, // Request a more accurate position
-                    timeout: 10000,           // 10 seconds before timeout
+                    timeout: 120000,           // 2 minutes before the deadline
                     maximumAge: 0             // Don't use a cached position
                 };
                 navigator.geolocation.getCurrentPosition(
