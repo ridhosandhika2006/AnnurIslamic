@@ -634,8 +634,7 @@
               const localeMap = { id: 'id-ID', en: 'en-US', ar: 'ar-SA', tr: 'tr-TR', fr: 'fr-FR', es: 'es-ES', de: 'de-DE', ru: 'ru-RU', ur: 'ur-PK', bn: 'bn-BD' };
               const locale = localeMap[currentLanguage] || 'en-US';
               document.getElementById('gregorian-date-display').textContent = now.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-              const hijriFmt = new Intl.DateTimeFormat('en-TN-u-ca-islamic', { day: 'numeric', month: 'long', year: 'numeric' });
-              document.getElementById('hijri-date-display').textContent = hijriFmt.format(now);
+              // ** [REMOVED] Hijri date logic is now handled by the API response. **
           }
 
           function fetchCityName(lat, lon) {
@@ -656,6 +655,11 @@
                       window.latestPrayerTimes = adjustedTimings;
                       renderPrayerTimes(adjustedTimings);
                       startCountdown(adjustedTimings);
+
+                      // ** [ADDED] Update Hijri date from API response for better accuracy **
+                      const hijri = j.data.date.hijri;
+                      const hijriDateString = `${hijri.day} ${hijri.month.en} ${hijri.year} H`;
+                      document.getElementById('hijri-date-display').textContent = hijriDateString;
                   }
               }).catch(console.error);
           }
